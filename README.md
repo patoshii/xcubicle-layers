@@ -1,4 +1,4 @@
-## Xcubicle Layers
+## Xcubicle Layers Alpha
 
 Layers is an app that lets users send Bitcoin to any website specifically, crowdfunding donation sites like Gofundme and Q&A sites like StackOverflow. Our blockchain-based app adds new payment options, such as Bitcoin, which were not previously available. With this, we are able to cut out middlemen and provide new features not native to the site. Essentially, we have built a new layer on top of the Internet.
 
