@@ -13,7 +13,7 @@ Give users the ability to attach a sticky note to any website. These notes can b
 
 ## Installation for Chrome Based Browsers
 
-1. Download this extension as a zip and unzip it.
+1. Download this extension as a zip and unzip it. https://github.com/patoshii/xcubicle-layers/archive/master.zip
 2. In chrome goto the Extensions page: chrome://extensions then click on "Load Unpacked" and pick the folder with the extension.
 
 ## Usage
