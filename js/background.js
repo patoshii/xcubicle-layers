@@ -30,7 +30,7 @@ chrome.runtime.onInstalled.addListener(async function() {
   chrome.storage.local.set({ supportedDomains });
 
   // const supportedTokens = 'btc,ltc,xmr,eos,eth,usdc,usdt';
-  const supportedTokens = 'btc,eth,usdc,usdt,dai';
+  const supportedTokens = 'btc,eth,usdc,usdt,dai,ignis';
   chrome.storage.local.set({ supportedTokens }); 
 
   try {
