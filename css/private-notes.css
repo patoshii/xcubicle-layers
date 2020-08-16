@@ -1,0 +1,57 @@
+#private-table-container {
+  width: 90%;
+  margin: auto;
+}
+
+#private-table-container .btn {
+  border: 1px solid #000;
+  margin-bottom: 5px;
+  margin-right: 5px;
+  cursor: pointer;
+  outline: none;
+}
+
+#private-table-container .btn.disable {
+  display: none;
+}
+
+#private-table-container .btn:hover {
+  background: #000;
+  color: #fff;
+  border: 1px solid transparent;
+}
+
+#decrypt-all {
+  float: right;
+}
+
+#private-table-container table { width: 100%;  word-break: break-word; }
+
+#private-table-container th {
+  cursor: pointer;
+  background: #000;
+  color: #fff;
+  padding: 10px;
+}
+
+#private-table-container tbody tr:nth-child(odd) {
+  background: #2193b0;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #6dd5ed, #2193b0);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #6dd5ed, #2193b0); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+  color: #fff;
+}
+
+#private-table-container td {
+  border: 1px solid #cecece;
+  padding: 5px;
+}
+
+#private-table-container td.date { width: 160px; text-align: center } 
+
+#private-table-container td.url { width: 250px }
+  #private-table-container td.url div { height: 65px; overflow-y: scroll; }
+#private-table-container td.note {}
+
+
+#private-table-container td.action { width: 99px; text-align: center } 

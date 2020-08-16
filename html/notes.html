@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="../css/loading.css">
+  <link rel="stylesheet" href="../css/notes.css">
+  <title>Xcubicle Layers - My Notes</title>
+</head>
+
+<body>
+  <header>
+    <h2>Notes for this URL:</h2>
+    <input type="text" id="source" disabled>
+    <div class="hide">
+      <label> Global Url Hashed: </label>
+      <input type="text" id="global-url" disabled>
+      <input type="hidden" id="node">
+      <label> Source Url Hashed: </label>
+      <input type="text" id="source-url" disabled>
+    </div>
+
+    <div id="customurl">
+      <h4>Change URL</h4>
+      <form action="" id="new-url-form">
+        <input type="text" id="url" placeholder="ex. https://www.google.com"><br>
+        <input type="submit" value="Load Notes">
+      </form>
+    </div>
+  </header>
+
+  <div id="notes-wrap">
+    <div class="notes" id="private-note-list">
+      <input type="radio" id="priv-list" name="tab" />
+      <h2><label for="priv-list">My Private Notes <sup>this URL</sup></label></h2>
+      <div class="note-list">
+        <p>Lists all of your own notes you saved to this URL. To view all your private notes on every domain <a href="/html/private-notes.html">go here</a>.</p>
+        <button class="btn" id="toggle-global-note">Hide Global Notes</button>
+        <button class="btn" id="decrypt-all">Decrypt All Notes</button>
+        <table>
+          <thead>
+            <tr>
+              <th data-index='0' class="taddress">Date</th>
+              <th data-index='1'>Note</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+    </div><!-- #private-note-list -->
+
+    <div class="notes" id="public-note-list">
+      <input type="radio" id="pub-list" name="tab" checked />
+      <h2><label for="pub-list">Public Notes <sup>See Everyone's</sup></label></h2>
+      <div class="note-list">
+        <p>See everyone's public notes. Just like a twitter feed. All notes cannot be deleted or censored.</p>
+        <button class="btn" id="self-note">Show My Public Notes Only<sup>this URL</sup></button>
+        <table>
+          <thead>
+            <tr>
+              <th class="taddress" data-index='0'>Post Date / Address</th>
+              <th class="tnote" data-index='1'>Note</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+    </div><!-- #public-note-list -->
+  </div>
+  <div class="loading-container">
+		<h1>Loading</h1>
+		<svg id="load" x="0px" y="0px" viewBox="0 0 150 150"><circle id="loading-inner" cx="75" cy="75" r="60"></circle></svg>
+	</div>
+  <script src="../js/lib/pictogrify/pictogrify.js"></script>
+  <script src="../js/lib/snarkdown.js"></script> 
+  <script src="../js/lib/moment.min.js"></script>
+  <script src="../js/lib/moment-timezone-with-data.min.js"></script>
+  <script src="../js/functions.js"></script>
+  <script src="../js/notes.js"></script>
+</body>
+
+</html>

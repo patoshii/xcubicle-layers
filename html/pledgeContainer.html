@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" style="height:100%">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="../css/pledgeContainer.css">
+  <title>Make A Pledge</title>
+</head>
+
+<body style="background:url(../images/bg_xclayers.png) #eee8d8 no-repeat; background-size: cover;">
+  <h1 class="page-title" style="width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 18px; text-align: center"></h1>
+  <div id="donate-modal" class="close" style="padding: 0 0 9px; margin: 0 auto 10px auto; clear: both; max-width: 320px">
+    <div id="cdonate" class="wrap-bitcoin" style="text-align:center;padding: 9px;word-wrap: break-word;transition: 2s all;"> 
+      <input id="cdonate__init-btn" type="radio" name="cdonate">
+      <input id="cdonate__confirm-btn" type="radio" name="cdonate" checked>
+      <div id="cdonate__init">
+        <select class="coin-options" name="coin"></select>
+        <h3 style=" font-size: 14px; margin: 0 0 5px;">Deposit To Your Address<br><span class="coin-address">
+            <a href="https://www.blockchain.com/btc/address/1BZy6wBtGUdWrTBt1yRPN95HUcXgCDkdtG" target="_blank"
+              style="font-size:13px">1BZy6wBtGUdWrTBt1yRPN95HUcXgCDkdtG</a></span></h3>
+        <img class="coin-qr" style="border: 1px solid #000;"
+          src="blob:https://www.gofundme.com/cf5d3647-fe81-4107-a602-798e3a425492">
+        <h4 class="balance" style="margin:0;color:#f00;font-size: 16px;">Your Balance: 0 BTC</h4>
+        <details>
+          <summary style="outline: none; cursor: pointer; margin-bottom:5px;">How does this work?</summary>
+          <ul style="list-style:none; margin: 0; padding-left:15px; text-align: left;">
+            <li>- Deposit coins to "your address"*</li>
+            <li>- Enter a pledge amount**</li>
+            <li>- Amount will be withdrawn when compaign ends.***</li>
+          </ul>
+          <div style="text-align: left; padding: 15px;">
+            <p>Read the <a href="#">FAQ</a></p>
+            <p>* You control your own private keys. View them in the extension options.</p>
+            <p>** Upon pledging, your private keys are shared with us creating a "shared" address. The pledge amount will
+              be withdrawn when the campaign ends. If there are not enough funds in the address, nothing happens.</p>
+          </div>
+        </details>
+				<div class="amount-container">
+					<input style="border:1px solid #000;width:180px;height:40px;" placeholder="Amount" type="number" class="pledge-amount">
+          <div id="pledge-usd-value"><strong>USD Value:</strong> <em>$0</em></div>
+				</div>
+        <input type="text" class="pledge-note" placeholder="Add a message (Optional)" maxlength="100" style="width: 100%; margin: 10px 0;">
+        <label for="cdonate__init-btn" tabindex="0" class="pledge-btn">Pledge Now</label>
+				<sup id="total-price" style="margin-top: 15px; display: inline-block;"><em>Currenctly 1 <span class="label" style="color:#000;"> BTC </span> = $<span class="price"></span></em></sup>
+      </div>
+      <div id="cdonate__confirm">
+        <strong style="color: #f00">Confirm Pledge?</strong>
+        <label for="cdonate__init-btn" class="pledge-submit">Yes</label>
+				<label for="cdonate__confirm-btn" class="pledge-btn">Cancel</label>
+        <p>Sending <span class="balance"></span><br>(<span class="usd-value"></span> USD) to</p>
+        <p class="campaign-url"></p>
+				<p class="pledge-note"></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/functions.js"></script>
+  <script src="../js/pledgeContainer.js"></script>
+</body>
+
+</html>

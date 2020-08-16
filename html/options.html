@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="../css/options.css">
+  <title>Xcubicle Layers - Options</title>
+</head>
+
+<body>
+  <div class="sidebar">
+    <h2>Setting</h2>
+    <div data-id="#general-config" class="current">General</div>
+    <div data-id="#notes-config">Notes</div>
+    <div data-id="#node-config">Node Config</div>
+    <div data-id="#address-keys">Address Keys</div>
+    <div data-id="#about">About</div>
+  </div>
+  <div class="content">
+    <div id="general-config" class="current">
+      <div class="section timezone">
+        <h2>Timezone</h2>
+        <form id="timezone-form">
+          <label for="timezone">Select Timezone: </label>
+          <input type="text" id="timezone" list="timezone-datalist" placeholder="e.g. datalist">
+          <datalist id="timezone-datalist"></datalist>
+          <input type="submit" value="Save">
+        </form>
+        <div class="output">
+          <p class="set-timezone"></p>
+          <p class="your-timezone"></p>
+        </div>
+      </div>
+      <div class="section konami" id="custom-power-level">
+        <p id="custom-level">Custom Level: <strong class="value">Not Set</strong></p>
+        <h3>UNLOCKED! - Developer Mode - Power Level</h3>
+        <form id="power-level-form">
+          <input type="number" name="power" id="power-input" step="any">
+          <input type="submit" value="Save">
+        </form>
+        <span>Default powe level: 1815.9881521</span>
+      </div>
+      <div class="section konami" id="blockTimestamp">
+        <h3>UNLOCKED! - Developer Mode - Filter Block Timestamp</h3>
+        <form>
+          <input type="date" name="timestamp" id="timestamp">
+          <input type="submit" value="Save">
+        </form>
+        <span>Tranasctions older than the this will get ignored</span><br>
+        <span class="current"></span>
+        <p id="timestamp-display">Block Timestamp set: <strong class="value">Not Set</strong></p>
+      </div>
+      <div class="section" id="supported-domains">
+        <h2>Pledge Support for Domains</h2>
+        <form>
+          <div class="control-group">
+            <label class="control control-checkbox">
+              gofundme
+              <input type="checkbox" value="gofundme" />
+              <div class="control-indicator"></div>
+            </label>
+            <label class="control control-checkbox">
+              fiverr
+              <input type="checkbox" value="fiverr" />
+              <div class="control-indicator"></div>
+            </label>
+            <label class="control control-checkbox">
+              patreon
+              <input type="checkbox" value="patreon" />
+              <div class="control-indicator"></div>
+            </label>
+            <label class="control control-checkbox">
+              linkedin
+              <input type="checkbox" value="linkedin" />
+              <div class="control-indicator"></div>
+            </label>
+            <label class="control control-checkbox">
+              github
+              <input type="checkbox" value="github" />
+              <div class="control-indicator"></div>
+            </label>
+            <label class="control control-checkbox">
+              kickstarter
+              <input type="checkbox" value="kickstarter" />
+              <div class="control-indicator"></div>
+            </label>
+            <label class="control control-checkbox">
+              facebook
+              <input type="checkbox" value="facebook" />
+              <div class="control-indicator"></div>
+            </label>
+            <label class="control control-checkbox">
+              twitter
+              <input type="checkbox" value="twitter" />
+              <div class="control-indicator"></div>
+            </label>
+            <label class="control control-checkbox">
+              stackoverflow / stackexchange
+              <input type="checkbox" value="stackoverflow|stackexchange" />
+              <div class="control-indicator"></div>
+            </label>
+            <label class="control control-checkbox">
+              ebay
+              <input type="checkbox" value="ebay" />
+              <div class="control-indicator"></div>
+            </label>
+            <label class="control control-checkbox">
+              Youtube
+              <input type="checkbox" value="youtube" />
+              <div class="control-indicator"></div>
+            </label>
+            <label class="control control-checkbox">
+              Telegram
+              <input type="checkbox" value="t" />
+              <div class="control-indicator"></div>
+            </label>
+            <label class="control control-checkbox hidden">
+              Google
+              <input type="checkbox" value="google" />
+              <div class="control-indicator"></div>
+            </label>
+            <label class="control control-checkbox all">
+              Enable on Any Domain 
+              <input type="checkbox" value="all" />
+              <div class="control-indicator"></div>
+            </label>
+            <input type="submit" value="Save">
+          </div>
+        </form>
+      </div>
+      <div class="section konami" id="supported-tokens">
+        <h3>Supported Tokens/Coins</h3>
+        <form>
+          <div class="control-group">
+            <label class="control control-checkbox">
+              Bitcoin
+              <input type="checkbox" value="btc" disabled />
+              <div class="control-indicator"></div>
+            </label>
+            <label class="control control-checkbox">
+              Litecoin
+              <input type="checkbox" value="ltc" />
+              <div class="control-indicator"></div>
+            </label>
+            <label class="control control-checkbox">
+              Monero
+              <input type="checkbox" value="xmr" />
+              <div class="control-indicator"></div>
+            </label>
+            <label class="control control-checkbox">
+              EOS
+              <input type="checkbox" value="eos" />
+              <div class="control-indicator"></div>
+            </label>
+            <label class="control control-checkbox">
+              Ethereum
+              <input type="checkbox" value="eth" />
+              <div class="control-indicator"></div>
+            </label>
+            <label class="control control-checkbox">
+              USDC
+              <input type="checkbox" value="usdc" />
+              <div class="control-indicator"></div>
+            </label>
+            <label class="control control-checkbox">
+              USDT
+              <input type="checkbox" value="usdt" />
+              <div class="control-indicator"></div>
+            </label>
+            <label class="control control-checkbox">
+              DAI
+              <input type="checkbox" value="dai" />
+              <div class="control-indicator"></div>
+            </label>
+            <label class="control control-checkbox">
+              IGNIS
+              <input type="checkbox" value="ignis" />
+              <div class="control-indicator"></div>
+            </label>
+            <input type="submit" value="Save">
+          </div>
+        </form>
+      </div>
+    </div>
+    <div id="notes-config">
+      <div class="section custom-pass">
+        <h2>Cipher</h2>
+        <div id="cipher-option">
+          <h3>Add Secondary Cipher Password for Notes</h3>
+          <form id="cipher-option-form">
+            <input type="radio" name="cipher" value="enable">Enable
+            <input type="radio" name="cipher" value="disable" checked>Disable
+            <input type="submit" value="Save">
+          </form>
+        </div>
+      </div>
+      <div class="section custom-pass">
+        <h2>Notes On Page Popup</h2>
+        <div id="note-popup-option">
+          <form id="note-popup-option-form">
+            <input type="radio" name="note-popup" value="enable">Enable
+            <input type="radio" name="note-popup" value="disable" checked>Disable
+            <input type="submit" value="Save">
+          </form>
+        </div>
+      </div>
+      <div class="section noteDisplayLimit">
+        <h2># of Notes</h2>
+        <form id="noteDisplayLimit-form">
+          <label for="limit">Number of notes to display.</label><br><br>
+          <input type="number" name="limit" min="1" />
+          <input type="submit" value="Save"/>
+        </form>
+        <div class="output">
+          <p class="current">Current Set: <span class="value">3</span></p>
+        </div>
+      </div>
+    </div>
+    <div id="node-config">
+      <div class="section" id="option-status">
+        <h2>Status</h2>
+        <p id="testnet"> Ardor Testnet Node: <a
+            href="https://testardor.xcubicle.com">https://testardor.xcubicle.com</a><span
+            class="activeBtn">Active</span>
+        </p>
+        <p id="mainnet"> Ardor Mainnet Node: <a href="https://ardor.jelurida.com">https://ardor.jelurida.com</a>
+          <span class="activeBtn">Active</span></p>
+      </div>
+      <div class="section node">
+        <div id="testnet-node">
+          <h2>Enter your own `Ardor Testnet` node</h2>
+          <form id="testnet-node-form">
+            <input type="text" name="node" id="testnet-node-input"
+              placeholder="Example: https://testardor.xcubicle.com">
+            <input type="submit" value="Save">
+            <div><small>Node List: <a href="https://ardor.peerexplorer.com/api_openapi_ssl"
+                  target="_BLANK">https://ardor.peerexplorer.com/api_openapi_ssl</a></small></div>
+          </form>
+        </div>
+      </div>
+      <div class="section node">
+        <div id="mainnet-node">
+          <h2>Enter your own `Ardor Mainnet` node</h2>
+          <form id="mainnet-node-form">
+            <input type="text" name="node" id="mainnet-node-input" placeholder="Example: https://ardor.jelurida.com">
+            <input type="submit" value="Save">
+            <div><small>Node List: <a href="https://ardor.peerexplorer.com/api_openapi_ssl"
+                  target="_BLANK">https://ardor.peerexplorer.com/api_openapi_ssl</a></small></div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="section" id="address-keys">
+      <h2>Addresses</h2>
+      <div id="addresses">Login to see your Private Keys.</div>
+    </div>
+    <div class="section" id="about">
+      <h2>About</h2>
+      <div id="addresses">Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum eum velit error a, exercitationem perferendis illo quidem, omnis dolorem non, eos cumque nostrum molestias magni eveniet earum. Asperiores quod magnam nemo voluptate in? Tempore nostrum explicabo quas, at facilis molestias sint vero laudantium exercitationem inventore architecto cum officiis nisi dolor, iste atque repellat autem perferendis animi quia nam possimus. Quod et nulla, atque saepe animi ducimus quidem aspernatur tempore non nobis iure dignissimos laudantium doloribus unde expedita labore incidunt, ea praesentium odit, molestiae cumque tempora amet fugiat. Consectetur perspiciatis, vel architecto minima reprehenderit iusto sit quod quas quidem repellat est iure pariatur placeat, dolorum aspernatur. Officiis culpa officia pariatur, voluptatibus iure ut hic laudantium voluptates, eum perspiciatis velit alias porro, quia doloremque mollitia. Ratione ipsa suscipit, vero ad perspiciatis atque tempora odit sequi excepturi officia aliquid ex eaque explicabo at. Quaerat, repellat soluta? Ipsum voluptas inventore praesentium aliquid blanditiis est, facere minima tenetur, quae quas, consequuntur accusamus. Nulla eligendi in consectetur libero, repellendus vitae asperiores voluptates exercitationem dicta, adipisci doloremque dolorum, iure officia molestias nam! Voluptatum cupiditate cumque illo omnis ducimus, ullam nam eaque ipsam numquam. Pariatur iusto delectus amet ullam harum modi nesciunt officiis excepturi corporis? Numquam, debitis libero! Ut, quam alias similique iure neque cum sequi ad velit placeat esse necessitatibus impedit quia dolorum iste saepe! Praesentium quae blanditiis consequuntur similique voluptatibus voluptas repellendus, aliquam quos eum beatae rerum incidunt natus quisquam dolor consectetur maiores harum hic in ex recusandae! Ad quia libero dolor non reprehenderit repellat error, possimus nam ab aliquam eius ducimus velit quam quasi nulla laudantium repudiandae hic praesentium nobis suscipit quo eum molestias. Iste eaque vel laudantium labore dignissimos quo tempore similique dolore provident beatae enim recusandae inventore quidem libero omnis nisi ut doloribus totam amet, suscipit maiores nihil iusto temporibus ratione. Iste, doloribus.</div>
+    </div>
+  </div>
+  <script src="../js/lib/moment.min.js"></script>
+  <script src="../js/lib/moment-timezone-with-data.min.js"></script>
+  <script src="../js/lib/autocomplete.min.js"></script>
+  <script src="../js/functions.js"></script>
+  <script src="../js/options.js"></script>
+</body>
+
+</html>

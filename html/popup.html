@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="../css/popup.css">
+  <title>Xcubicle Layers</title>
+</head>
+
+<body>
+  <div id="navigate">
+    <div id="content-switch">
+      <a id="comment" href="#">Notes</a>
+      <a id="pledge" class="active" href="#">Pledges</a>
+    </div>
+    <div id="node-type">
+      <a id="testnet" class="active" href="#" src-href="https://testardor.xcubicle.com">Testnet</a> /
+      <a id="mainnet" href="#" src-href="https://ardor.jelurida.com">Mainnet</a>
+    </div>
+  </div>
+
+  <div id="initForm">
+    <h2 style="margin:0;text-align: center;">Login</h2>
+    <div class="init open">
+      <a href="https://layers.xcubicle.com" target="_BLANK" class="new-user">New User</a>
+      <a href="#" class="returning-user">Returning User</a>
+    </div>
+    <div id="login-box">
+      <form>
+        <fieldset class="x-email">
+          <input id="xprime" class="form-control" placeholder="Email" autocomplete="off">
+        </fieldset>
+        <fieldset class="x-salt">
+          <input type="password" id="salt" class="form-control" placeholder="Passphrase" autocomplete="off">
+          <input type="button" id="togglePass" value="Show">
+          <button id="btn" class="btn">Login</button>
+          <p class="disclaimer">Passwords cannot be recovered if forgotten.*</p>
+        </fieldset>
+      </form>
+      <div id="scatter-toggle"><a href="https://get-scatter.com" target="_blank"><img src="../images/scatterIcon.svg"
+            alt="SCATTER ICON"></a> Scatter <label class="switch">
+          <input type="checkbox">
+          <span class="slider round"></span>
+        </label>
+        <div class="scatter-login"><a href="#" class="scatter">Enter Email & Login</a></div>
+        <div class="chrome-id"></div>
+      </div>
+    </div> 
+    <div id="progress" style="display:none">
+      <center id="progressText">Running scrypt...</center>
+      <div class="progress">
+        <div id="progress-bar" class="progress-bar" style="background: green; width: 50%"> </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="logout"><button>Logout</button></div>
+
+  <div id="power-message"></div>
+
+  <div id="lvl-wrap">
+    <div id="lvl-message">Expert Encryption Enabled</div>
+    <h4 id="toggle-expert-mode">[?]</h4>
+    <h5 id="lvl-status">
+      <div id="lvl-scrypt"></div>
+      <div id="lvl-pbkdf2"></div>
+    </h5>
+    <div id="power-select">
+      <h4>Expert Mode - Encrypt Type: </h4>
+      <input type="radio" class="power-level" name="power-level" value="1"> None /
+      <input type="radio" class="power-level" name="power-level" value="16"> Short /
+      <input type="radio" class="power-level" name="power-level" value="default" checked> Normal
+    </div>
+  </div>
+
+  <div class="output-form" style="display:none">
+    <input id="btcpub" type="text">
+    <input id="btcpri" type="text">
+    <input id="nxtaddr" type="text">
+    <input id="nxtpub" type="text">
+    <input id="nxtpass" type="text">
+    <input id="ltcpub" class="altcoins" type="text">
+    <input id="ltcpri" class="altcoins" type="text">
+    <input id="ethpub" class="altcoins" type="text">
+    <input id="ethpri" class="altcoins" type="text">
+    <input id="segpub" class="altcoins" type="text">
+    <input id="segpri" class="altcoins" type="text">
+    <input id="eospub" class="altcoins" type="text">
+    <input id="eospri" class="altcoins" type="text">
+    <input id="xmrpub" class="altcoins" type="text">
+    <input id="xmrpub-spend" class="altcoins" type="text">
+    <input id="xmrpri-spend" class="altcoins" type="text">
+    <input id="xmrpub-view" class="altcoins" type="text">
+    <input id="xmrpri-view" class="altcoins" type="text">
+  </div>
+
+  <div id="account-detail">
+    <div id="detail">
+      <span id="pictogram"></span>
+      <div class="account-alias"></div>
+      <div class="account-name"></div>
+      <div class="account-balance">Loading User...</div>
+    </div>
+  </div>
+
+  <div id="pledge-content">
+    <div id="cryptos">
+      <details>
+        <summary title="Right Click to View Private Keys in Options Page">My Addresses</summary>
+        <div id="cryptos-content">
+          <div class="crypto-detail bitcoin btc">
+            <span class="icon"></span>
+            <div class="title"><strong class="label">Bitcoin - </strong><span class="balance">0</span> BTC</div>
+            <div class="address"></div>
+          </div>
+          <div class="crypto-detail litecoin ltc">
+            <span class="icon"></span>
+            <div class="title"><strong class="label">Litecoin - </strong><span class="balance">0</span> LTC</div>
+            <div class="address"></div>
+          </div>
+          <div class="crypto-detail ethereum eth">
+            <span class="icon"></span>
+            <div class="title"><strong class="label">Ethereum - </strong><span class="balance">0</span> ETH</div>
+            <div class="address"></div>
+          </div>
+          <div class="crypto-detail eos">
+            <span class="icon"></span>
+            <div class="title"><strong class="label">EOS - </strong><span class="desc">No Account Name Detected</span>
+            </div>
+            <div class="address"></div>
+          </div>
+          <div class="crypto-detail Monero xmr">
+            <span class="icon"></span>
+            <div class="title"><strong class="label">Monero - </strong><span class="balance">Unknown Amount</span></div>
+            <div class="address"></div>
+          </div>
+          <div class="crypto-detail USDC usdc">
+            <span class="icon-img"><img src="../images/usdc-icon.png" alt="USDC"></span>
+            <div class="title"><strong class="label">USDC - </strong><span class="balance">0</span> USDC</div>
+            <div class="address"></div>
+          </div>
+          <div class="crypto-detail USDT usdt">
+            <span class="icon-img"><img src="../images/usdt-icon.png" alt="USDT"></span>
+            <div class="title"><strong class="label">USDT - </strong><span class="balance">0</span> USDT</div>
+            <div class="address"></div>
+          </div>
+          <div class="crypto-detail DAI dai">
+            <span class="icon-img"><img src="../images/dai-icon.png" alt="DAI"></span>
+            <div class="title"><strong class="label">DAI - </strong><span class="balance">0</span> DAI</div>
+            <div class="address"></div>
+          </div>
+          <div class="crypto-detail IGNIS ignis">
+            <span class="icon-img"><img src="../images/ignis-icon.png" alt="IGNIS"></span>
+            <div class="title"><strong class="label">IGNIS - </strong><span class="balance">0</span> IGNIS</div>
+            <div class="address"></div>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <div class="campaign-status"><strong>Status:</strong> Pledging for this URL is not Supported</div>
+
+    <div class="pledges">
+      <a class="pledges-history" href="/html/pledges.html" target="_BLANK">My Pledges</a>
+      <em><a class="last-msg" href="/" target="_BLANK"></a></em>
+    </div>
+    <div class="notes" id="verified-note-list">
+      <h2>Recent Pledges</small></h2>
+      <ul class="list-content">
+      </ul>
+    </div><!-- #verified-note-list -->
+  </div>
+
+  <div id="comment-content">
+    <span class="sticky-icon"></span><label id="nlabel" for="addnote">Create Note</label><input id="addnote" type="checkbox" />
+    <div id="note-box" tabindex="0">
+      <textarea name="note" id="note" rows="5" maxlength="9999"
+        placeholder="Notes are private and encrypted by default. Tick the checkbox below to make publicly viewable notes. Notes saved to the blockchain cannot be deleted."
+        required></textarea>
+      <div id="char-count">0/1500</div>
+      <div id="current-url"></div>
+      <div>
+        <div id="public-note-container"><input id="public-note" type="checkbox"><strong>Public</strong> - Anyone can see this</div>
+        <div id="save-global-container"><input id="save-global" type="checkbox"><strong>Sitewide</strong> - <span class="save-global__desc">Show on every page</span></div>
+        <label for="secondary-pass">
+          <input id="secondary-pass" type="checkbox"><strong>Cipher</strong> - Add Secondary Password
+        </label>
+        <input name="custom-pass" type="text" class="custom-pass">
+      </div>
+      <button class="local disabled" title="Saves to your browser only. Not cross platform">Save Locally</button>
+      <button class="sync disabled" title="Saves to the blockchain. Cannot be deleted.">Save Online (Fee)</button>
+      <div id="balance-warning">*Not enough funds to pay fee.</div>
+    </div>
+
+    <div id="unconfirmed-notify">Note is being processed. Please Wait 45 seconds.</div>
+    <div class="notes" id="private-note-list">
+      <h2>My Private Notes <small>(<a id="note-page" href="notes.html" target="_blank">View all</a>)</small></h2>
+      <button id="decrypt-all"></button>
+      <ul class="list-content"></ul>
+    </div><!-- #private-note-list -->
+    <div class="notes" id="public-note-list">
+      <h2>Public Notes <small>(<a id="note-page" href="notes.html" target="_blank">View all</a>)</small></h2>
+      <button id="self-note">Show My Notes Only</button>
+      <button id="toggle-global-note">Hide Sitewide</button>
+      <ul class="list-content"></ul>
+    </div><!-- #public-note-list -->
+    <div id="no-notes">No Notes found on this domain.</div>
+  </div>
+
+  <div id="version">
+    <a href="https://layers.xcubicle.com" target="_blank">Xcubicle Layers <br /> Alpha Ver 1.0</a>
+  </div>
+
+  <script src="../js/lib/eos/scatterjs-core.min.js"></script>
+  <script src="../js/lib/eos/scatterjs-plugin-eosjs.min.js"></script>
+
+  <script src="../js/lib/nxtjs.js"></script>
+  <script src="../js/lib/memWallet.js"></script>
+  <script src="../js/lib/snarkdown.js"></script>
+  <script src="../js/lib/ecdsa.js"></script>
+  <script src="../js/lib/pictogrify/pictogrify.js"></script>
+  <script src="../js/lib/moment.min.js"></script>
+  <script src="../js/lib/moment-timezone-with-data.min.js"></script>
+  <script src="../js/functions.js"></script>
+  <script src="../js/popup.js?1"></script>
+
+</body>
+
+</html>

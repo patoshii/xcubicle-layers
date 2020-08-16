@@ -1,0 +1,389 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat');
+
+#cdonate * {
+  box-sizing: border-box;
+}
+
+#cdonate label {
+  display: block;
+}
+
+#cdonate input[type="radio"] {
+  display: none;
+}
+
+#cdonate__init,
+#cdonate__confirm {
+  max-height: 1000px;
+  opacity   : 1;
+  visibility: visible;
+  transition: all 0.5s;
+}
+
+#cdonate__confirm p {
+  margin: 20px 0;
+}
+
+#cdonate__confirm .pledge-note {
+  font-style: italic;
+}
+
+#cdonate__init-btn:checked~input~#cdonate__init {
+  max-height: 0;
+  opacity   : 0;
+  visibility: hidden;
+  transition: all 0.5s;
+}
+
+#cdonate__confirm-btn:checked~#cdonate__init~#cdonate__confirm {
+  max-height: 0;
+  opacity   : 0;
+  visibility: hidden;
+  transition: all 0.5s;
+}
+
+#cdonate img {
+  width : 70%;
+  margin: 10px;
+}
+
+#cdonate select.coin-options {
+  border            : 1px solid #000;
+  width             : 100%;
+  background        : #fff;
+  color             : #000;
+  -webkit-appearance: menulist;
+}
+
+#cdonate .balance span {
+  font-size : small;
+  font-style: italic;
+}
+
+#cdonate input.pledge-amount {
+  height: 42px;
+}
+
+#cdonate .pledge-submit,
+#cdonate .pledge-btn {
+  display      : block;
+  cursor       : pointer;
+  margin       : 0 auto;
+  height       : 40px;
+  border-radius: 4px;
+  width        : 80%;
+  background   : #ff4f51;
+  color        : #fff;
+  padding      : 9px;
+  font-size    : 16px;
+  line-height  : 1.5;
+  box-sizing   : border-box;
+}
+
+#cdonate .pledge-submit {
+  margin-bottom: 5px;
+}
+
+#cdonate #processingMsg {
+  background: #fff;
+  padding   : 20px 9px;
+  border    : 1px solid #000;
+  margin    : 9px 0;
+}
+
+#msg-with-bitcoin {
+  display       : inline-flex;
+  border        : 1px solid #000;
+  border-radius : 2px;
+  margin        : 9px;
+  padding       : 5px 10px;
+  height        : 40px;
+  background    : #FF9900;
+  color         : #fff;
+  font-family   : inherit;
+  cursor        : pointer;
+  vertical-align: bottom;
+}
+
+#bounty-with-bitcoin {
+  height        : 20px;
+  background    : #FF9900;
+  padding       : 5px 10px;
+  color         : #fff;
+  font-family   : inherit;
+  cursor        : pointer;
+  vertical-align: bottom;
+}
+
+#activate-account,
+#donate-btc-btn {
+  display           : block;
+  margin            : 0 auto 10px auto;
+  font-family       : inherit;
+  padding           : .85em 1em;
+  -webkit-appearance: none;
+  border            : 1px solid transparent;
+  border-radius     : 4px;
+  -webkit-transition: background-color .25s ease-out, color .25s ease-out;
+  transition        : background-color .25s ease-out, color .25s ease-out;
+  background-color  : #865801;
+  line-height       : 20px;
+  text-align        : center;
+  width             : 100%;
+  max-width         : 300px;
+  box-sizing        : border-box;
+  font-weight       : 600;
+  clear             : both;
+  cursor            : pointer;
+  color             : #fff;
+}
+
+#donate-btc-btn {
+  background           : url(chrome-extension://__MSG_@@extension_id__/images/donate-btn-icon.png) no-repeat #ff4f51 32px 7px;
+  background-position-y: center;
+  text-decoration      : none;
+}
+
+#donate-modal {
+  max-height: 1500px;
+  opacity   : 1;
+
+  transition: max-height 1.5s ease-out, opacity 1.5s ease-out;
+}
+
+#donate-modal.close {
+  max-height: 0;
+  opacity   : 0;
+  overflow  : hidden;
+  padding   : 0 !important;
+  margin    : auto !important;
+
+  transition: max-height 0.5s ease-out, opacity 0.5s ease-out;
+}
+
+#donate-modal.close+a[data-element-id="btn_donate"] {
+  display: block;
+}
+
+.crypto-pledges .empty {
+  text-align : center;
+  padding-top: 15px;
+  font-weight: bold;
+}
+
+.crypto-pledges .account {
+  font-size: 14px;
+}
+
+.loading-pledges {
+  text-align: center;
+}
+
+.loading-pledges path {
+  fill: rgb(0, 0, 0);
+}
+
+#cdonate h3,
+#cdonate details {
+  color : #000;
+  margin: 9px 0 15px;
+}
+
+#cdonate details {
+  background: #d1cab9;
+}
+
+#total-price {
+  color: #000;
+}
+
+#cdonate input {
+  background: #fff;
+  color     : #000;
+  padding   : 5px 10px;
+}
+
+.amount-container {
+  display        : flex;
+  align-items    : center;
+  justify-content: space-evenly;
+}
+
+.amount-container .pledge-amount {
+  width     : 75%;
+  transition: width 0.3s;
+}
+
+.amount-container .pledge-amount {
+  width     : 50%;
+  margin    : 0 2px;
+  transition: width 0.3s;
+}
+
+.amount-container #pledge-usd-value {
+  font-size: 12px;
+}
+
+.amount-container #pledge-usd-value em {
+  display: block;
+}
+
+#cdonate .pledge-submit,
+#cdonate .pledge-btn {
+  border       : 1px solid #000;
+  border-radius: 10px;
+  padding      : 8px 10px;
+}
+
+#cdonate #pledge-usd-value {
+  color : #000;
+  clear : both;
+  margin: 0 2px;
+}
+
+.permissionKeys {
+  margin-bottom: 15px;
+}
+
+.permissionKeys div {
+  margin: 5px 0;
+}
+
+.disabled {
+  pointer-events: none;
+  opacity       : 0.2;
+}
+
+.address {
+  position    : relative;
+  height      : 80px;
+  padding-left: 75px;
+  line-height : 1.5em;
+  overflow    : auto;
+  word-break  : break-all;
+}
+
+.address img {
+  position       : absolute;
+  left           : 0;
+  object-fit     : none;
+  object-position: 0 0;
+  width          : 64px;
+  height         : 64px;
+}
+
+.address h3,
+.address h4 {
+  margin : 0;
+  padding: 0;
+}
+
+.nxt-pub img {
+  object-position: -0px -0px;
+}
+
+.btc-pub img {
+  object-position: -64px -0px;
+}
+
+.eos-pub img {
+  object-position: -0px -64px;
+}
+
+.eth-pub img {
+  object-position: -64px -64px;
+}
+
+.ltc-pub img {
+  object-position: -0px -128px;
+}
+
+.xmr-pub img {
+  object-position: -64px -128px;
+}
+
+
+.pledged-total img,
+.pledged-total-empty img {
+  width : 30px;
+  height: 30px;
+}
+
+
+ul.pledged-total,
+ul.pledged-total-empty {
+  list-style: 0;
+  padding   : 0;
+  margin    : 0;
+}
+
+.pledged-total li,
+.pledged-total-empty li {
+  display     : block;
+  text-align  : center;
+  margin      : 9px 0 0;
+  word-spacing: 9px;
+}
+
+.hide {
+  display: none !important;
+}
+
+.pledged-total .value,
+.pledged-total-empty .value {
+  display: inline-block;
+}
+
+.pledged-total .value {
+  width: 110px;
+}
+
+.pledged-total-empty-container {
+  background: #d1cab9;
+  padding   : 5px;
+  margin    : 15px 0 0;
+}
+
+.pledged-total-empty-container summary {
+  outline    : none;
+  padding    : 2px 0 2px 15px;
+  user-select: none;
+  cursor     : pointer;
+  color      : #333;
+  width      : 200px;
+  font-size  : 16px;
+  width      : 100%;
+  text-align : center;
+  margin     : 0 0 0 -9px;
+}
+
+.pledge-list-container {
+  list-style: none;
+}
+
+.pledge-list-container li {
+  background     : gold;
+  position       : relative;
+  list-style-type: none;
+  margin-bottom  : 10px;
+  padding        : 5px;
+  border-radius  : 3px
+}
+
+.pledge-list-container h4 {
+  font-size: 12px;
+  margin   : 0;
+}
+
+.pledge-list-container .address {
+  padding: 0;
+}
+
+.pledge-list-container .pictogram {
+  margin-right: 5px;
+}
+
+.pledge-list-container .pictogram svg {
+  width : 30px;
+  height: 30px;
+}

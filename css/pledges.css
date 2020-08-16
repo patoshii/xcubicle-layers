@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat');
+
+body { font-size: 16px; font-family: 'Montserrat', sans-serif; } 
+
+table {
+  width: 100%;
+  border: 1px solid #000;
+  border-spacing: 0;
+  text-align: center;
+}
+
+thead {
+  background: #000;
+  color: #fff;
+}
+
+th {
+  padding: 10px;
+  cursor: pointer;
+}
+
+td {
+  padding: 10px;
+}
+
+tbody tr:hover {
+  background: #f1f1f1;
+}

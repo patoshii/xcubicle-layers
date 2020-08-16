@@ -1,0 +1,158 @@
+body { margin: 0 }
+
+/* SVG HEADER */
+header {
+  width: 95%;
+  max-width: 900px;
+  text-align: center;
+  margin: 0 auto;
+}
+
+header #source { width: 100%; box-sizing: border-box; padding: 0 0 0 135px }
+
+.hide { display: none }
+
+/* HEADER CONTENT */
+#customurl {background: #eee; width: 100px; padding: 0; z-index: 9; margin: -18px 0 9px 3px; position: absolute;} 
+  #customurl h4 { margin: 0 } 
+  #customurl form { display: none } 
+  #customurl #url { margin: 0 0 9px; width: 90% } 
+  #customurl:hover { width: 300px } 
+  #customurl:hover h4 { margin: 9px 0 } 
+  #customurl:hover form { display: block } 
+
+/* CONTENT */
+.notes {
+  width: 99%;
+  margin: auto;
+}
+
+.notes .btn {
+  border: 1px solid #000;
+  margin-bottom: 5px;
+  margin-right: 5px;
+  cursor: pointer;
+  outline: none;
+}
+
+.notes .btn.disable {
+  display: none;
+}
+
+.notes .btn:hover {
+  background: #000;
+  color: #fff;
+  border: 1px solid transparent;
+}
+.decipher-btn {
+  background: #1E9600;
+  background: -webkit-linear-gradient(to right, #FF0000, #FFF200, #1E9600);
+  background: linear-gradient(to right, #FF0000, #FFF200, #1E9600);
+}
+
+.notes #decrypt-all {
+  float: left;
+}
+
+#notes-wrap { clear: both; position: relative; padding: 80px 0 0; }
+
+.notes h2 {
+  position: absolute; 
+  top: 0;
+  width: 40%;
+  max-width: 200px;
+  text-align: center;
+  border: 1px solid #000;
+  opacity: .3;
+  transition: all ease-in 1s;
+  font-size: 15px;
+  background: #F7971E;
+  background: -webkit-linear-gradient(to right, #FFD200, #F7971E);
+  background: linear-gradient(to right, #FFD200, #F7971E);
+}
+.notes h2 label { display: block; padding: 5px 9px; }
+#private-note-list h2 { 
+  left: 250px; 
+  background: #56CCF2;
+  background: -webkit-linear-gradient(to right, #2F80ED, #56CCF2);
+  background: linear-gradient(to right, #2F80ED, #56CCF2);
+}
+
+#notes-wrap h2:hover label { cursor: pointer; }
+
+.notes > input { display: none }
+.notes > input:checked + h2 { opacity: 1; }
+.notes > input:checked ~ .note-list { opacity: 1; height: auto; }
+
+.notes .note-list { opacity: 0; height: 0; overflow: hidden; transition: all ease-in 1s; }
+
+.notes table {
+  width: 100%;
+}
+
+.notes tbody {
+}
+
+.notes th {
+  cursor: pointer;
+  padding: 10px;
+  background: #F7971E;
+  background: -webkit-linear-gradient(to right, #FFD200, #F7971E);
+  background: linear-gradient(to bottom, #FFD200, #F7971E);
+}
+#private-note-list th { 
+  background: #56CCF2;
+  background: -webkit-linear-gradient(to right, #2F80ED, #56CCF2);
+  background: linear-gradient(to bottom, #2F80ED, #56CCF2);
+}
+
+.notes tbody tr.global {
+  background: lightpink;
+}
+
+.notes tbody tr.local {
+  background: #eee;
+}
+
+.notes tbody .pledge-note {
+  background: gold;
+}
+
+.notes td {
+  border: 1px solid #cecece;
+  padding: 15px;
+}
+
+.taddress { width: 250px }
+
+.notes td.address svg {
+  vertical-align: middle;
+  margin-right: 5px;
+  border: 1px solid #aaa;
+  width: 30px;
+}
+
+.notes tr.global td.address svg,
+.notes tr.local td.address svg {
+  background: #fff;
+}
+
+.notes td.note {
+  word-break: break-word;
+}
+
+.notes td.note span {
+  display: inline-block;
+  width: 100%;
+  max-height: 250px;
+  overflow: auto;
+}
+
+.notes td.label span {
+  display: block;
+  padding: 5px;
+}
+
+#load #loading-inner {
+  stroke: #FFD200; 
+}

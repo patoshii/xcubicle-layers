@@ -1,0 +1,1121 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat');
+
+body {
+  width          : 357px;
+  min-height     : 150px;
+  color          : #000;
+  font-family    : 'Montserrat', sans-serif;
+  font-size      : 14px;
+  background     : url(../images/bg_xclayers.png) #eee8d8 no-repeat;
+  background-size: cover;
+  margin         : 0 !important;
+  padding        : 9px;
+}
+
+body.closed {
+  background     : url(../images/bg_xclayers_closed.png) #eee8d8 no-repeat;
+  background-size: cover;
+}
+
+a {
+  color          : #ff4e50;
+  text-decoration: none;
+}
+
+a:hover {
+  font-weight: bold;
+}
+
+#version {
+  text-align: right;
+  margin    : 20px 10px 10px 20px;
+  font-size : 11px;
+  font-style: italic;
+}
+
+#node-type {
+  font-size    : 9px;
+  display      : block;
+  position     : absolute;
+  left         : 0;
+  background   : #000;
+  overflow     : hidden;
+  width        : 9px;
+  height       : 9px;
+  top          : 0;
+  z-index      : 9;
+  border-radius: 0 0 9px;
+  transition   : 1s all;
+}
+
+#node-type:hover {
+  width     : 150px;
+  height    : 13px;
+  background: yellow;
+  text-align: center;
+}
+
+#node-type a {
+  color: #000;
+}
+
+#navigate {
+  text-align: right;
+  z-index   : 7;
+  position  : absolute;
+  width     : 100%;
+  left      : 0;
+  top       : 0;
+}
+
+#navigate .active {
+  font-weight: bold;
+  opacity    : 1;
+}
+
+#navigate a {
+  opacity: 0.3;
+}
+
+#navigate a:hover {
+  opacity: .8
+}
+
+#content-switch {
+  display: none;
+  margin : 0 30px 0 0;
+}
+
+#content-switch a {
+  display        : inline-block;
+  color          : #fff;
+  background     : #ff4f51;
+  padding        : 2px 5px;
+  text-decoration: none;
+  font-size      : 11px;
+  transition     : 2s all;
+}
+
+#pledge-content,
+#comment-content {
+  display: none;
+  clear  : right;
+}
+
+#pledge-content.on,
+#comment-content.on {
+  display: block;
+
+  -webkit-animation-duration : 2s;
+  animation-duration         : 2s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode        : both;
+
+  -webkit-animation-name: enterRight;
+  animation-name        : enterRight;
+}
+
+@keyframes enterRight {
+  0% {
+    opacity  : 0;
+    transform: translateX(20px);
+  }
+
+  100% {
+    opacity  : 1;
+    transform: translateX(0);
+  }
+}
+
+#cryptos {
+  display: none;
+}
+
+#cryptos summary {
+  outline    : none;
+  width      : 123px;
+  background : #ff4f51;
+  padding    : 2px 0 2px 15px;
+  user-select: none;
+  cursor     : pointer;
+  color      : #fff;
+  font-size  : 12px;
+}
+
+#cryptos #cryptos-content {
+  margin-top: 10px;
+}
+
+#cryptos strong {
+  font-size: 1.3em;
+}
+
+#cryptos .crypto-detail {
+  display   : none;
+  padding   : 5px 0;
+  word-break: break-word;
+  clear     : left;
+  font-size : 12px;
+}
+
+#cryptos .crypto-detail.show {
+  display: block;
+}
+
+/* ICONS */
+.icon {
+  float          : left;
+  background     : url(../images/crypto-icons.png);
+  overflow       : hidden;
+  text-indent    : -9999px;
+  text-align     : left;
+  background-size: 70px;
+  margin         : 0 10px 9px 0;
+}
+
+.btc .icon {
+  background-position: -35px 0px;
+  width              : 35px;
+  height             : 35px;
+}
+
+.eos .icon {
+  background-position: -0px -35px;
+  width              : 35px;
+  height             : 35px;
+}
+
+.eth .icon {
+  background-position: -35px -35px;
+  width              : 35px;
+  height             : 35px;
+}
+
+.ltc .icon {
+  background-position: -0px -70px;
+  width              : 35px;
+  height             : 35px;
+}
+
+.xmr .icon {
+  background-position: -35px -70px;
+  width              : 35px;
+  height             : 35px;
+  margin-top         : 10px;
+}
+
+.crypto-detail .icon-img img {
+  float : left;
+  width : 35px;
+  height: 35px;
+  margin: 0 10px 9px 0;
+}
+
+#cryptos .label {
+  word-break: break-all;
+}
+
+.campaign-status {
+  margin       : 5px 0;
+  font-size    : 15px;
+  background   : #fff;
+  padding      : 9px;
+  border       : 1px solid #aaa;
+  margin       : 20px auto;
+  width        : 90%;
+  box-shadow   : 0px 0px 2px #888;
+  border-radius: 9px;
+  word-break   : break-all;
+}
+
+.campaign-status strong {
+  font-size: 17px;
+}
+
+.create-pledge {
+  box-shadow      : inset 0px 1px 0px 0px #cf866c;
+  background      : linear-gradient(to bottom, #d0451b 5%, #bc3315 100%);
+  background-color: #d0451b;
+  border-radius   : 3px;
+  border          : 1px solid #942911;
+  display         : inline-block;
+  cursor          : pointer;
+  color           : #ffffff;
+  font-family     : Arial;
+  font-size       : 13px;
+  padding         : 6px 24px;
+  margin          : 5px 0;
+  text-decoration : none;
+  text-shadow     : 0px 1px 0px #854629;
+}
+
+.create-pledge:hover {
+  background      : linear-gradient(to bottom, #bc3315 5%, #d0451b 100%);
+  background-color: #bc3315;
+}
+
+.create-pledge:active {
+  position: relative;
+  top     : 1px;
+}
+
+
+.pledges {
+  display: none;
+}
+
+#pictogram {
+  float       : left;
+  width       : 40px;
+  height      : 40px;
+  margin-right: 10px;
+  background  : #fff;
+}
+
+#initForm {
+  visibility: hidden;
+  overflow  : hidden;
+  height    : 0;
+  transition: height 0.8s;
+}
+
+#initForm.show {
+  visibility: visible;
+  height    : 200px;
+}
+
+#initForm .loading {
+  display: block;
+}
+
+#initForm .loading path {
+  fill: #000;
+}
+
+.init {
+  display              : -webkit-box;
+  display              : -ms-flexbox;
+  display              : flex;
+  -webkit-box-orient   : vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction   : column;
+  flex-direction       : column;
+  -webkit-box-align    : center;
+  -ms-flex-align       : center;
+  align-items          : center;
+  height               : 0;
+  overflow             : hidden;
+  transition           : all 1s ease-out;
+}
+
+.init.open {
+  height    : 150px;
+  margin-top: 10px;
+}
+
+.init a {
+  margin         : 5px;
+  text-decoration: none;
+  padding        : 15px;
+  width          : 50%;
+  margin         : 10px 0;
+  text-align     : center;
+  color          : #000;
+  background     : #fff;
+  font-weight    : bold;
+}
+
+.init a:hover {
+  background: #cecece;
+}
+
+fieldset {
+  border  : 0;
+  position: relative;
+  padding : 0;
+}
+
+#login-box {
+  clear     : right;
+  height    : 0;
+  overflow  : hidden;
+  width     : 100%;
+  max-width : 360px;
+  margin    : 0;
+  text-align: center;
+  transition: all 1s ease-in;
+}
+
+#login-box.open {
+  height    : 150px;
+  margin-top: 10px;
+}
+
+.logged-in #login-box {
+  display: none;
+}
+
+#login-box fieldset {
+  height: 60px;
+}
+
+#login-box fieldset input {
+  -webkit-appearance         : none;
+  -moz-appearance            : none;
+  appearance                 : none;
+  outline                    : 0;
+  border                     : 1px solid rgba(255, 255, 255, 0.4);
+  background-color           : rgba(255, 255, 255, .6);
+  color                      : #000;
+  width                      : 100%;
+  max-width                  : 230px;
+  border-radius              : 3px;
+  padding                    : 10px;
+  margin                     : 0 auto 10px auto;
+  display                    : block;
+  text-align                 : center;
+  font-size                  : 22px;
+  -webkit-transition-duration: 0.25s;
+  transition-duration        : 0.25s;
+  font-weight                : 300;
+}
+
+#login-box fieldset input:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+#login-box fieldset input.focus,
+#login-box fieldset input:focus {
+  background-color: white;
+  width           : 310px;
+  color           : #000;
+}
+
+#login-box .disclaimer {
+  opacity   : 0;
+  color     : #ff0000;
+  height    : 0;
+  margin    : 0;
+  font-size : 0.9em;
+  transition: 1s all;
+}
+
+#login-box:not(.scatter-on) .x-salt:focus-within~.disclaimer {
+  opacity: 1;
+  margin : 10px;
+  height : 20px;
+}
+
+#login-box.scatter-on #btn {
+  visibility: hidden;
+  opacity   : 0;
+  height    : 0;
+  transition: all 1s ease-out;
+  overflow  : hidden;
+  padding   : 0;
+}
+
+#login-box #btn {
+  color        : #fff;
+  background   : #ee4e2c;
+  border       : 0;
+  padding      : 9px;
+  border-radius: 3px;
+  margin       : auto;
+  position     : absolute;
+  top          : 9px;
+  height       : 30px;
+  right        : 28px;
+  transition   : ease-in .5s;
+  opacity      : 0;
+}
+
+
+#login-box #btn.show {
+  opacity: 1;
+}
+
+#login-box fieldset #xprime,
+#salt {
+  visibility: visible;
+  opacity   : 1;
+}
+
+#login-box.fadeOut {
+  visibility: hidden;
+  opacity   : 0;
+  height    : 0;
+  transition: all 1s ease-in-out;
+}
+
+#initForm.fadeOut {
+  height    : 120px;
+  transition: all 1s ease-in-out;
+}
+
+#login-box .x-salt {
+  visibility: visible;
+  opacity   : 1;
+  height    : 60px;
+  transition: all 1s ease-in;
+}
+
+#login-box.scatter-on .x-salt {
+  visibility: hidden;
+  opacity   : 0;
+  height    : 0;
+  transition: all 1s ease-out;
+  overflow  : hidden
+}
+
+#login-box fieldset #togglePass {
+  opacity    : 0;
+  transition : ease-in .5s;
+  width      : 50px;
+  display    : inline-block;
+  position   : absolute;
+  top        : 9px;
+  left       : 18px;
+  font-size  : 10px;
+  background : #bbb;
+  color      : #fff;
+  padding    : 0;
+  border     : 3px;
+  cursor     : pointer;
+  height     : 30px;
+  line-height: 30px;
+}
+
+#login-box fieldset input.focus+#togglePass {
+  opacity: 1;
+}
+
+#login-box .switch {
+  position      : relative;
+  display       : inline-block;
+  width         : 30px;
+  height        : 20px;
+  vertical-align: middle;
+}
+
+#login-box .switch input {
+  opacity: 0;
+  width  : 0;
+  height : 0;
+}
+
+#login-box .slider {
+  position          : absolute;
+  cursor            : pointer;
+  top               : 0;
+  left              : 0;
+  right             : 0;
+  bottom            : 0;
+  border-radius     : 34px;
+  background-color  : #ccc;
+  -webkit-transition: .4s;
+  transition        : .4s;
+}
+
+#login-box .slider:before {
+  position          : absolute;
+  content           : "";
+  height            : 10px;
+  width             : 10px;
+  left              : 5px;
+  bottom            : 4px;
+  border-radius     : 50%;
+  background-color  : white;
+  -webkit-transition: .4s;
+  transition        : .4s;
+}
+
+#login-box input:checked+.slider {
+  background-color: #2196F3;
+}
+
+#login-box input:focus+.slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+#login-box input:checked+.slider:before {
+  -webkit-transform: translateX(10px);
+  -ms-transform    : translateX(10px);
+  transform        : translateX(10px);
+}
+
+#login-box img {
+  height        : 20px;
+  width         : 20px;
+  vertical-align: middle;
+}
+
+#login-box #scatter-toggle a {
+  padding: 7px 0;
+  display: inline-block;
+}
+
+#login-box .chrome-id {
+  line-height: 12px;
+}
+
+#logout {
+  display : none;
+  position: absolute;
+  right   : 10px;
+  top     : -4px;
+  z-index : 9;
+}
+
+#logout button {
+  cursor    : pointer;
+  outline   : none;
+  background: url("../images/power-off.svg") no-repeat;
+  border    : 0;
+  width     : 15px;
+  height    : 15px;
+  font-size : 0;
+}
+
+.progress-form {
+  line-height     : 19px;
+  display         : none;
+  position        : relative;
+  background-color: #333;
+  border-radius   : 2px;
+  box-shadow      : 0 2px 5px rgba(0, 0, 0, 0.25) inset;
+}
+
+.progress-form .bar {
+  position        : absolute;
+  background-image: -webkit-linear-gradient(-45deg, transparent 33%, rgba(0, 0, 0, .1) 33%, rgba(0, 0, 0, .1) 66%, transparent 66%), -webkit-linear-gradient(top, rgba(255, 255, 255, .25), rgba(0, 0, 0, .25)), -webkit-linear-gradient(left, #2bbb00, #23ff00);
+  border-radius   : 2px;
+  background-size : 35px 20px, 100% 100%, 100% 100%;
+}
+
+.progress-form span {
+  position : relative;
+  z-index  : 9;
+  font-size: 11px;
+}
+
+#power-message {
+  margin-top   : 10px;
+  margin-bottom: -10px;
+  color        : #f00;
+  text-align   : right;
+}
+
+#lvl-wrap {
+  display: none
+}
+
+#lvl-wrap #lvl-message {
+  display: none;
+}
+
+#lvl-wrap #toggle-expert-mode {
+  cursor    : pointer;
+  text-align: right;
+}
+
+#lvl-wrap #power-select {
+  display: none;
+}
+
+#lvl-wrap #power-select.visible {
+  display: block;
+}
+
+#lvl-wrap #power-select h4 {
+  margin: 0;
+}
+
+#external-links {
+  display: none;
+  height : 15px;
+}
+
+#external-links span {
+  display: inline-block;
+  width  : 155px;
+  padding: 0 0 0 5px;
+}
+
+#external-links span:hover {
+  font-size: 11px;
+}
+
+#account-detail {
+  display    : none;
+  clear      : right;
+  width      : 350px;
+  min-height : 50px;
+  padding-top: 10px;
+}
+
+#detail.aliased:hover .account-name {
+  display: block;
+}
+
+#detail.aliased:hover .account-balance {
+  display: none;
+}
+
+#detail.aliased .account-alias {
+  display       : block;
+  font-weight   : bold;
+  letter-spacing: 1px;
+}
+
+#detail .account-alias {
+  display: none;
+  cursor : pointer;
+}
+
+#detail.aliased .account-name {
+  display: none;
+}
+
+#detail .account-name {
+  color      : #731d44;
+  font-weight: bold;
+}
+
+#detail .account-name a {
+  text-decoration: none;
+}
+
+#detail .account-name a::after {
+  content    : '\21A9';
+  margin-left: 1px;
+  font-size  : 13px;
+}
+
+#account-detail #logout {
+  float: right;
+}
+
+#account-detail #logout button {
+  cursor    : pointer;
+  outline   : none;
+  background: url(https://i.imgur.com/4ZBCqbF.png) no-repeat;
+  border    : 0;
+  width     : 15px;
+  height    : 15px;
+  font-size : 0;
+}
+
+#unconfirmed-notify {
+  color     : #f00;
+  visibility: hidden;
+  height    : 0;
+  transition: all 1s;
+}
+
+#unconfirmed-notify.show {
+  padding   : 30px;
+  visibility: visible;
+  height    : auto;
+  transition: all 1s;
+}
+
+#activate-account {
+  display       : inline-block;
+  padding       : 5px 10px;
+  margin        : 20px 0;
+  background    : #f1f1f1;
+  border-radius : 10px;
+  cursor        : pointer;
+  letter-spacing: 1px;
+}
+
+#activate-account path {
+  fill: #000;
+}
+
+#current-url {
+  font-size : 10px;
+  background: #eee;
+  padding   : 5px;
+  overflow-y: scroll
+}
+
+#note-box button {
+  border       : 1px solid transparent;
+  background   : skyblue;
+  color        : #fff;
+  padding      : 5px 10px;
+  margin       : 5px;
+  cursor       : pointer;
+  outline-color: #000;
+  outline-width: thin;
+}
+
+#note-box .sync {
+  background: #fd8989;
+}
+
+.custom-pass {
+  display: none;
+}
+
+.custom-pass.active {
+  display: inline;
+  height : 12px;
+}
+
+
+/* NOTES/COMMENTS */
+#unconfirmed-notify {
+  color: #f00;
+}
+
+.notes {
+  display: none;
+  padding: 15px 9px 9px 9px;
+  margin : 20px 0;
+}
+
+.notes h2 {
+  width    : 250px;
+  font-size: 18px;
+  display  : inline;
+  padding  : 0 9px 0 0;
+}
+
+.notes .pictogram {
+  margin-right: 5px;
+}
+
+.notes .pictogram svg {
+  width : 30px;
+  height: 30px;
+}
+
+.notes#private-note-list {
+  background   : linear-gradient(to right, #fff, #f9c1c2);
+  border-radius: 9px;
+  margin-top   : 0;
+}
+
+#private-note-list>button {
+  background       : url('../images/eye-icon.svg');
+  height           : 20px;
+  width            : 20px;
+  background-repeat: no-repeat;
+  border           : 0;
+  vertical-align   : middle;
+  cursor           : pointer;
+}
+
+.notes#public-note-list {
+  background   : linear-gradient(to right, #f2ede0, #fff);
+  border-radius: 9px;
+}
+
+.notes#public-note-list .loading {
+  display    : inline-block !important;
+  margin-left: 50% !important;
+  transform  : translateX(-50%);
+}
+
+.notes#public-note-list path {
+  fill: #000;
+}
+
+#no-notes {
+  display      : none;
+  margin       : 15px;
+  padding      : 15px;
+  text-align   : center;
+  background   : #ffffff;
+  border-radius: 9px;
+  z-index      : 9;
+  ;
+}
+
+button#self-note {
+  display: none
+}
+
+.notes ul {
+  padding: 0;
+}
+
+.notes .list-content>li {
+  position       : relative;
+  list-style-type: none;
+  margin-bottom  : 10px;
+  padding        : 5px;
+  background     : #fff;
+  border-radius  : 3px;
+}
+
+.notes li.global {
+  background: linear-gradient(to right, #fff, #daf0f9);
+}
+
+.notes li.local {
+  background: linear-gradient(to right, #fff, #757F9A);
+}
+
+.notes li.global:before,
+.notes li.local:after {
+  content   : 'Sitewide Note';
+  background: #fcc;
+  position  : absolute;
+  top       : 0;
+  right     : 0;
+  padding   : 3px 5px;
+  font-size : 10px;
+}
+
+.notes li.local:after {
+  content   : "Saved Locally";
+  background: #ccf;
+  opacity   : .9;
+  top       : 19px;
+}
+
+.notes li.global.local {
+  background: linear-gradient(to right, #E2E2E2, #C9D6FF);
+}
+
+.notes li .note {
+  word-wrap : break-word;
+  max-height: 169px;
+  overflow-y: auto;
+}
+
+.notes .list-content .pledge-note {
+  background: gold;
+}
+
+.notes .list-content .pledge-note {
+  pointer-events: none;
+}
+
+.notes .list-content .pictogram {
+  float: left;
+}
+
+.notes li .note svg {
+  /* margin: 0 5px 5px 0; */
+}
+
+.notes li .note.active {
+  max-height: unset;
+  overflow  : display;
+}
+
+.notes li .note-content {
+  cursor: pointer;
+}
+
+.notes li .note-content img {
+  width : 50px;
+  height: 50px;
+}
+
+.notes li .note-content>ul {
+  list-style: disc;
+  padding   : 5px 0 5px 20px;
+}
+
+.notes li .note-actions {
+  position     : absolute;
+  bottom       : -17px;
+  left         : 9px;
+  padding      : 3px 8px;
+  background   : rgba(232, 232, 232, .7);
+  border-radius: 5px;
+  z-index      : 2;
+  box-shadow   : 0px 0px 2px #666;
+  opacity      : 0;
+  transition   : all ease-in .4s;
+}
+
+.notes li:hover .note-actions {
+  opacity: 1
+}
+
+.notes li .address {
+  display: none;
+}
+
+.notes li:hover .address {
+  display: inline;
+}
+
+.notes .list-content>li h4 {
+  opacity   : 0;
+  height    : 0;
+  transition: .5s all;
+  margin    : 0;
+  font-size : 12px;
+}
+
+.notes .list-content>li:hover h4 {
+  opacity: .6;
+  height : 35px;
+  width  : 260px;
+}
+
+.notes li .note-actions button {
+  margin: 0 5px;
+}
+
+.notes .decipher-btn {
+  background: #1E9600;
+  background: -webkit-linear-gradient(to right, #FF0000, #FFF200, #1E9600);
+  background: linear-gradient(to right, #FF0000, #FFF200, #1E9600);
+  border    : 1px solid #000;
+}
+
+.notes .decipher-btn.disable {
+  display: none;
+}
+
+#nlabel {
+  background: #ff4f51;
+  color     : #fff;
+  font-size : 12px;
+  padding   : 2px 15px 2px 15px;
+  cursor    : pointer;
+}
+
+#nlabel+input {
+  display: none;
+}
+
+#note-box {
+  position  : relative;
+  overflow  : hidden;
+  height    : 0;
+  outline   : none;
+  clear     : right;
+  opacity   : 0;
+  transition: 1s all;
+}
+
+input#addnote:checked+#note-box {
+  height : 210px;
+  opacity: 1;
+}
+
+#note-box textarea {
+  width     : 100%;
+  box-sizing: border-box;
+  padding   : 14px 7px 7px 7px;
+}
+
+#char-count {
+  position        : absolute;
+  right           : 0;
+  top             : 1px;
+  font-style      : italic;
+  font-size       : 10px;
+  background-color: #000;
+  color           : #fff;
+}
+
+#balance-warning {
+  display: none;
+  color  : #ff0000;
+}
+
+#current-url {
+  font-size : 10px;
+  background: #eee;
+  padding   : 5px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  max-height: 15px;
+  word-break: break-all;
+}
+
+#current-url:before {
+  content    : 'URL ';
+  font-weight: bold;
+}
+
+
+label[for="secondary-pass"].disable {
+  display: none;
+}
+
+#note-box button {
+  border       : 1px solid transparent;
+  background   : #a7a7a7;
+  color        : #fff;
+  padding      : 5px 10px;
+  margin       : 5px;
+  cursor       : pointer;
+  outline-color: #000;
+  outline-width: thin;
+}
+
+#note-box .sync {
+  background: #ff5052;
+}
+
+.custom-pass {
+  display: none;
+}
+
+.custom-pass.active {
+  display: inline;
+}
+
+#note-page {
+  text-transform : none;
+  text-decoration: none;
+}
+
+/* LOGOUT CONTAINER  */
+#loading-dots .dot {
+  font-size        : 5em;
+  line-height      : 0;
+  opacity          : 0.2;
+  animation        : dotAnimate 2.5s ease-in-out infinite;
+  -webkit-animation: dotAnimate 2.5s ease-in-out infinite;
+}
+
+#loading-dots .dot:nth-of-type(2) {
+  animation-delay        : 0.4s;
+  -webkit-animation-delay: 0.4s;
+}
+
+#loading-dots .dot:last-of-type {
+  animation-delay        : 0.6s;
+  -webkit-animation-delay: 0.6s;
+}
+
+@keyframes dotAnimate {
+  0% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.2;
+  }
+}
+
+@-webkit-keyframes dotAnimate {
+  0% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.2;
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "name": "Xcubicle Layers",
+  "version": "1.0",
+  "description": "",
+  "manifest_version": 2,
+  "permissions": ["declarativeContent", "storage", "tabs","activeTab","contextMenus"],
+  "options_page": "html/options.html",
+  "background": {
+    "scripts": [
+      "js/lib/moment.min.js",
+      "js/functions.js",
+      "js/background.js"
+    ],
+    "persistent": false
+  },
+  "browser_action": {
+    "default_popup": "html/popup.html",
+    "default_icon": "images/icon.png"
+  },
+  "content_scripts": [{
+    "matches": ["<all_urls>"], 
+    "css": ["css/content.css"],
+    "js": ["js/lib/moment.min.js","js/lib/moment-timezone-with-data.min.js", "js/lib/snarkdown.js", "js/functions.js",  "js/content_scripts/utils.js", "js/content_scripts/content.js","js/content_scripts/templates.js"]
+  }],
+  "homepage_url": "https://www.xcubicle.com",
+  "web_accessible_resources": ["images/bg_xclayers.png", "images/crypto-icons.png", "images/*-icon.png", "html/*"],
+  "icons": {
+    "16": "images/icon.png",
+    "32": "images/icon.png",
+    "48": "images/icon.png",
+    "128": "images/icon.png"
+  }
+}
+

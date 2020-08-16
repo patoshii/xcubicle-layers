@@ -1,0 +1,285 @@
+html,
+body {
+  margin          : 0;
+  padding         : 0;
+  background-color: #ececec;
+  overflow-x      : hidden;
+}
+
+.sidebar {
+  position   : fixed;
+  width      : 200px;
+  height     : 100%;
+  background : #000;
+  color      : #fff;
+  user-select: none;
+}
+
+.sidebar h2 {
+  padding: 8px 16px;
+}
+
+.sidebar div {
+  width          : 100%;
+  padding        : 10px 20px;
+  font-size      : 20px;
+  color          : #fff;
+  box-sizing     : border-box;
+  text-decoration: none;
+  cursor         : pointer;
+  overflow       : hidden;
+}
+
+.sidebar li:hover,
+.sidebar .current {
+  background: #f00;
+  color     : #fff;
+}
+
+.content {
+  margin-left: 200px;
+  overflow   : hidden;
+  width      : calc(100% - 200px);
+  height     : 100%;
+}
+
+.content>* {
+  display: none;
+}
+
+.content>.current {
+  position: relative;
+  display : block;
+}
+
+.section {
+  position  : relative;
+  width     : 100%;
+  padding   : 5px 30px;
+  box-sizing: border-box;
+}
+
+.section h2 {
+  font-size: 1.5rem;
+}
+
+#custom-node-input {
+  width  : 50%;
+  outline: none;
+}
+
+#message {
+  color  : #f00;
+  padding: 5px;
+}
+
+.activeBtn {
+  display       : inline-block;
+  border        : 1px solid #000;
+  padding       : 0 10px;
+  margin-left   : 10px;
+  vertical-align: middle;
+  cursor        : pointer;
+  opacity       : 0.2;
+}
+
+.activeBtn:hover {
+  opacity: 1;
+}
+
+.active .activeBtn {
+  opacity: 1;
+}
+
+#addresses {
+  font-size: 16px;
+}
+
+#addresses ul {
+  padding: 0;
+}
+
+#addresses li {
+  list-style : none;
+  padding    : 10px 0;
+  word-break : break-word;
+  line-height: 25px;
+}
+
+.private-key .value {
+  color      : transparent;
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
+}
+
+.private-key .value:hover {
+  color      : black;
+  text-shadow: 0 0 0;
+}
+
+span.pri-label {
+  background: rgba(255, 0, 0, 0.1);
+}
+
+span.pub-label {
+  background: rgba(0, 0, 255, 0.1);
+}
+
+/* REMOVE LATER */
+.seg,
+.xmr.public-key~li {
+  display: none;
+}
+
+/* KONAMI */
+.section.konami {
+  display: none;
+}
+
+/* ICONS */
+.icon {
+  display    : inline-block;
+  background : url(../images/crypto-icons.png);
+  overflow   : hidden;
+  text-indent: -9999px;
+  text-align : left;
+}
+
+.nxt .icon {
+  background-position: -0px -0px;
+  width              : 64px;
+  height             : 64px;
+}
+
+.btc .icon {
+  background-position: -64px -0px;
+  width              : 64px;
+  height             : 64px;
+}
+
+.eos .icon {
+  background-position: -0px -64px;
+  width              : 64px;
+  height             : 64px;
+}
+
+.eth .icon {
+  background-position: -64px -64px;
+  width              : 64px;
+  height             : 64px;
+}
+
+.ltc .icon {
+  background-position: -0px -128px;
+  width              : 64px;
+  height             : 64px;
+}
+
+.xmr .icon {
+  background-position: -64px -128px;
+  width              : 64px;
+  height             : 64px;
+}
+
+.icon-img img {
+  width : 64px;
+  height: 64px;
+  margin: 0 10px 9px 0;
+}
+
+
+/* Supported Domains */
+.control {
+  font-family  : arial;
+  display      : block;
+  position     : relative;
+  padding-left : 29px;
+  margin-bottom: 5px;
+  padding-top  : 5px;
+  cursor       : pointer;
+  font-size    : 16px;
+}
+
+#supported-tokens .control:first-of-type {
+  opacity: 0.2;
+}
+
+.control-checkbox--fade {
+  opacity: 0.3;
+}
+
+.control.all {
+  font-weight: bold;
+  font-size  : 17px;
+}
+
+.control input {
+  position: absolute;
+  z-index : -1;
+  opacity : 0;
+}
+
+.control-indicator {
+  position  : absolute;
+  top       : 6px;
+  left      : 0;
+  height    : 20px;
+  width     : 20px;
+  background: #fff;
+  border    : 0px solid #000000;
+}
+
+.control:hover input~.control-indicator,
+.control input:focus~.control-indicator {
+  background: #ff4f51;
+}
+
+.control input:checked~.control-indicator {
+  background: #ff4f51;
+}
+
+.control-indicator:after {
+  box-sizing: unset;
+  content   : '';
+  position  : absolute;
+  display   : none;
+}
+
+.control input:checked~.control-indicator:after {
+  display: block;
+}
+
+.control-checkbox .control-indicator:after {
+  left        : 8px;
+  top         : 4px;
+  width       : 3px;
+  height      : 8px;
+  border      : solid #ffffff;
+  border-width: 0 2px 2px 0;
+  transform   : rotate(45deg);
+}
+
+.control-checkbox.hidden {
+  display: none;
+}
+
+input[type="submit"] {
+  display    : block;
+  background : #ff4f51;
+  color      : #fff;
+  font-weight: bold;
+  font-size  : 1em;
+  width      : 100px;
+  margin-top : 10px;
+  padding    : 5px;
+  cursor     : pointer;
+  border     : 0;
+  outline    : none;
+}
+
+input[type="submit"]:hover {
+  color     : #ff4f51;
+  background: #fff;
+  width     : 100px;
+  margin-top: 10px;
+  cursor    : pointer;
+}

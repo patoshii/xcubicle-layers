@@ -1,0 +1,183 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat');
+
+* {
+  box-sizing : border-box;
+  font-family: Montserrat, sans-serif !important;
+}
+
+#cdonate label {
+  display: block;
+}
+
+#cdonate input[type="radio"] {
+  display: none;
+}
+
+#cdonate__init,
+#cdonate__confirm {
+  max-height: 550px;
+  opacity   : 1;
+  visibility: visible;
+  transition: all 0.5s;
+}
+
+
+#cdonate__confirm p {
+  margin: 20px 0;
+}
+
+#cdonate__confirm .pledge-note {
+  font-style: italic;
+}
+
+#cdonate__init-btn:checked~input~#cdonate__init {
+  max-height: 0;
+  opacity   : 0;
+  visibility: hidden;
+  transition: all 0.5s;
+}
+
+#cdonate__confirm-btn:checked~#cdonate__init~#cdonate__confirm {
+  max-height: 0;
+  opacity   : 0;
+  visibility: hidden;
+  transition: all 0.5s;
+}
+
+
+#cdonate img {
+  width : 70%;
+  margin: 10px;
+}
+
+#cdonate select.coin-options {
+  border            : 1px solid #000;
+  width             : 100%;
+  background        : #fff;
+  color             : #000;
+  -webkit-appearance: menulist;
+}
+
+#cdonate .pledge-submit,
+#cdonate .pledge-btn {
+  display      : block;
+  cursor       : pointer;
+  margin       : 0 auto;
+  height       : 40px;
+  border-radius: 4px;
+  width        : 80%;
+  background   : #ff4f51;
+  color        : #fff;
+  padding      : 9px;
+  font-size    : 16px;
+  line-height  : 1.5;
+  box-sizing   : border-box;
+}
+
+#cdonate .pledge-submit {
+  margin-bottom: 5px;
+}
+
+#cdonate .pledge-note {
+  width     : 100%;
+  margin-top: 5px;
+}
+
+#cdonate #processingMsg {
+  background: #fff;
+  padding   : 20px 9px;
+  border    : 1px solid #000;
+  margin    : 9px 0;
+}
+
+#msg-with-bitcoin {
+  display       : inline-flex;
+  border        : 1px solid #000;
+  border-radius : 2px;
+  margin        : 9px;
+  padding       : 5px 10px;
+  height        : 40px;
+  background    : #FF9900;
+  color         : #fff;
+  font-family   : inherit;
+  cursor        : pointer;
+  vertical-align: bottom;
+}
+
+.crypto-pledges .empty {
+  text-align : center;
+  padding-top: 15px;
+  font-weight: bold;
+}
+
+.crypto-pledges .account {
+  font-size: 14px;
+}
+
+.loading-pledges {
+  text-align: center;
+}
+
+.loading-pledges path {
+  fill: rgb(0, 0, 0);
+}
+
+#cdonate h3,
+#cdonate details {
+  color : #000;
+  margin: 9px 0 15px;
+}
+
+#cdonate details {
+  background: #d1cab9;
+}
+
+#total-price {
+  color: #000;
+}
+
+#cdonate input {
+  background: #fff;
+  color     : #000;
+  padding   : 5px 10px;
+}
+
+.amount-container {
+  display        : flex;
+  align-items    : center;
+  justify-content: space-evenly;
+}
+
+.amount-container.active {
+  display        : flex;
+  align-items    : center;
+  justify-content: space-evenly;
+}
+
+.amount-container .pledge-amount {
+  width     : 75%;
+  transition: width 0.3s;
+}
+
+.amount-container.active .pledge-amount {
+  width     : 50%;
+  margin    : 0 2px;
+  transition: width 0.3s;
+}
+
+.amount-container.active #pledge-usd-value {
+  font-size: 12px;
+}
+
+#cdonate .pledge-submit,
+#cdonate .pledge-btn {
+  border       : 1px solid #000;
+  border-radius: 10px;
+  padding      : 8px 10px;
+}
+
+#cdonate #pledge-usd-value {
+  color: #000;
+  clear: both;
+  width: 100px;
+}

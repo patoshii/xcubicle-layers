@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Xcubicle Layers - Private Notes</title>
+	<link rel="stylesheet" href="../css/loading.css">
+	<link rel="stylesheet" href="../css/private-notes.css">
+</head>
+<body>
+	<div class="container">
+		<h2>All My Private Notes for Every URL<sup></sup></h2>
+		<div id="private-table-container">
+			<button class="btn" id="decrypt-all">Decrypt All Notes</button>
+			<table>
+				<thead>
+					<tr>
+						<th data-index='0'>Date</th>
+						<th data-index='1'>URL</th>
+						<th data-index='2'>Note</th>
+						<th data-index='3'></th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+		</div>
+		<div class="loading-container">
+			<h1>Loading</h1>
+			<svg id="load" x="0px" y="0px" viewBox="0 0 150 150">
+				<circle id="loading-inner" cx="75" cy="75" r="60"></circle>
+			</svg>
+			<h3></h3>
+		</div>
+	</div>
+
+	<script src="../js/lib/snarkdown.js"></script>
+	<script src="../js/lib/moment.min.js"></script>
+	<script src="../js/lib/moment-timezone-with-data.min.js"></script>
+	<script src="../js/functions.js"></script>
+	<script src="../js/private-notes.js"></script>
+</body>
+
+</html>
