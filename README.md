@@ -18,8 +18,13 @@ Give users the ability to attach a sticky note to any website. These notes can b
 1. Download this extension as a zip and unzip it. https://github.com/patoshii/xcubicle-layers/archive/master.zip
 2. In chrome goto the Extensions page: chrome://extensions then click on "Load Unpacked" and pick the folder with the extension.
 
+![](./screenshot1.png)
+
 ## Usage
 
 - Account registration is optional. You can choose Returning User and enter in any email and password to login, but pledging will be disabled. However the notes layers will still work.
 - Currently pledging is only supported on Gofundme.com. Other sites like kickstarter.com, stackoverflow.com, linkedin.com, maps.google.com, and ebay.com have only demo code implemented. Eventually we will open pledging to any URL.
 - Notes can be written on any URL. Everything is stored on the Ardor data cloud. Private notes are only seen by the account holder and public notes are seen by anyone visiting that page.
+
+![](./screenshot2.png)
+![](./screenshot3.png)
