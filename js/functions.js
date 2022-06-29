@@ -21,7 +21,7 @@ const searchAccountAlias = async function(node, account) {
   }
 }
 const getAccountAlias = function (node, account) {
-  return getRequest(`${node}/nxt?requestType=getAliases&chain=ignis&account=${account}`).then(result => {
+  return getRequest(`${node}/nxt?requestType=getAliases&account=${account}`).then(result => {
     if (result.aliases) {
       let found = false, aliasName, uri;
       for (let alias of result.aliases) {
