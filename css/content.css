@@ -12,12 +12,31 @@
   display: none;
 }
 
+
 #cdonate__init,
 #cdonate__confirm {
-  max-height: 1000px;
+  max-height: 550px;
   opacity   : 1;
   visibility: visible;
   transition: all 0.5s;
+}
+
+
+#cdonate__init>h3,
+#cdonate__init>img {
+  float: left;
+}
+
+#cdonate__init>h3 {
+  font-size: 14px;
+  margin   : 5%;
+  width    : 50%;
+}
+
+#cdonate__init>img {
+  border: 1px solid #000;
+  margin: 5% 0;
+  width : 40%
 }
 
 #cdonate__confirm p {
@@ -28,11 +47,23 @@
   font-style: italic;
 }
 
+
+#cdonate__confirm .recurrence,
+#cdonate__confirm .sending {
+  font-weight: bold;
+}
+
 #cdonate__init-btn:checked~input~#cdonate__init {
   max-height: 0;
   opacity   : 0;
   visibility: hidden;
+  margin    : 0 !important;
   transition: all 0.5s;
+}
+
+#cdonate__init-btn:checked~input~#cdonate__init>h3,
+#cdonate__init-btn:checked~input~#cdonate__init>img {
+  float: none;
 }
 
 #cdonate__confirm-btn:checked~#cdonate__init~#cdonate__confirm {
@@ -40,11 +71,6 @@
   opacity   : 0;
   visibility: hidden;
   transition: all 0.5s;
-}
-
-#cdonate img {
-  width : 70%;
-  margin: 10px;
 }
 
 #cdonate select.coin-options {
@@ -55,6 +81,22 @@
   -webkit-appearance: menulist;
 }
 
+#cdonate .coin-address a {
+  display      : block;
+  text-overflow: ellipsis;
+  white-space  : nowrap;
+  overflow     : hidden;
+}
+
+#cdonate .coin-address:hover a {
+  white-space: unset;
+}
+
+#cdonate .coin-address:hover a+img {
+  display: none;
+}
+
+
 #cdonate .balance span {
   font-size : small;
   font-style: italic;
@@ -64,9 +106,22 @@
   height: 42px;
 }
 
+.fadeToggle {
+  height    : 0 !important;
+  opacity   : 0 !important;
+  visibility: hidden !important;
+  margin    : 0 !important;
+  padding   : 0 !important;
+  transition: all .3s;
+}
+
+.fadeToggle--off {
+  transition: all .3s;
+}
+
 #cdonate .pledge-submit,
 #cdonate .pledge-btn {
-  display      : block;
+  display      : inline-block;
   cursor       : pointer;
   margin       : 0 auto;
   height       : 40px;
@@ -147,8 +202,14 @@
 #donate-modal {
   max-height: 1500px;
   opacity   : 1;
+  overflow  : hidden;
 
   transition: max-height 1.5s ease-out, opacity 1.5s ease-out;
+}
+
+#donate-modal.hidden {
+  max-height: 320px;
+  transition: all .6s ease-out;
 }
 
 #donate-modal.close {
@@ -183,18 +244,19 @@
   fill: rgb(0, 0, 0);
 }
 
-#cdonate h3,
 #cdonate details {
-  color : #000;
-  margin: 9px 0 15px;
-}
-
-#cdonate details {
+  color     : #000;
+  margin    : 9px 0 15px;
   background: #d1cab9;
 }
 
 #total-price {
   color: #000;
+}
+
+#total-price a {
+  text-decoration: none;
+  font-style     : italic;
 }
 
 #cdonate input {
@@ -220,6 +282,16 @@
   transition: width 0.3s;
 }
 
+.pledge-amount::-webkit-outer-spin-button,
+.pledge-amount::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin            : 0;
+}
+
+.pledge-amount {
+  -moz-appearance: textfield;
+}
+
 .amount-container #pledge-usd-value {
   font-size: 12px;
 }
@@ -239,6 +311,7 @@
   color : #000;
   clear : both;
   margin: 0 2px;
+  height: 36px;
 }
 
 .permissionKeys {
@@ -386,4 +459,63 @@ ul.pledged-total-empty {
 .pledge-list-container .pictogram svg {
   width : 30px;
   height: 30px;
+}
+
+.recurrence-container button {
+  color           : #f00;
+  margin-top      : 5px;
+  cursor          : pointer;
+  border-radius   : 15px;
+  padding         : 5px 10px;
+  outline         : none;
+  background-color: #fff;
+}
+
+.recurrence-container button:hover {
+  opacity: .8;
+}
+
+.recurrence-options {
+  position          : absolute;
+  left              : 0;
+  top               : 0;
+  width             : 100%;
+  background        : #eee8d8;
+  height            : 100%;
+  opacity           : 0;
+  visibility        : hidden;
+  transition        : all .5s ease-in-out;
+  -webkit-transition: all .5s ease-in-out;
+  -moz-transition   : all .5s ease-in-out;
+  -o-transition     : all .5s ease-in-out;
+  -ms-transition    : all .5s ease-in-out;
+}
+
+.recurrence-options.visible {
+  opacity           : 1;
+  visibility        : visible;
+  transition        : all .3s ease-in;
+  -webkit-transition: all .3s ease-in;
+  -moz-transition   : all .3s ease-in;
+  -ms-transition    : all .3s ease-in;
+  -o-transition     : all .3s ease-in;
+}
+
+.recurrence-options ul {
+  list-style: none;
+  padding   : 0;
+  margin    : 0;
+
+  display       : flex;
+  flex-direction: column;
+}
+
+.recurrence-options li {
+  padding: 15px;
+  cursor : pointer;
+}
+
+.recurrence-options li.selected,
+.recurrence-options li:hover {
+  background-color: #f3efe6;
 }

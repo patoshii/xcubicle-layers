@@ -1,9 +1,10 @@
+const NODE = 'https://a1.annex.network';
 
 chrome.storage.local.get(['activeNode', 'isTestnet'], function (result) {
   pledges(result['activeNode'], result['isTestnet']);
 });
 
-async function pledges(node = 'https://testardor.jelurida.com', isTestnet=true) { 
+async function pledges(node, isTestnet=true) { 
   let pledgeList = [];
 
   // Get the address query string 
@@ -19,7 +20,7 @@ async function pledges(node = 'https://testardor.jelurida.com', isTestnet=true) 
   document.querySelector('.pledges').after(loader()); 
   document.querySelector('.loading h1').innerHTML = `Trouble loading?<br/>See if your node is working: <a href="${node}/index.html?chain=IGNIS&account=${address}" target="_blank">${node}</a>`;
 
-  const searchQueryRequest = `${node}/nxt?requestType=searchTaggedData&chain=ignis&tag=${address},pledge-note`;
+  const searchQueryRequest = `${node}/nxt?requestType=searchTaggedData&tag=${address},pledge-note`;
 
   const cloudResponse = await window
     .fetch(searchQueryRequest, { method: 'GET' })
@@ -29,8 +30,8 @@ async function pledges(node = 'https://testardor.jelurida.com', isTestnet=true) 
     for (let data of cloudResponse.data) {
       // the label explicitly contains the following tags only 
       if (data && data.tags.includes(`pledge-note`) && data.tags.includes(address)) {
-        const hash = data.transactionFullHash;
-        const pledgeRequest = `${node}/nxt?requestType=getTaggedData&chain=ignis&transactionFullHash=${hash}`;
+        const hash = data.transaction;
+        const pledgeRequest = `${node}/nxt?requestType=getTaggedData&transaction=${hash}`;
 
         const donationResponse = await window
           .fetch(pledgeRequest, { method: 'GET' })
@@ -57,7 +58,7 @@ async function pledges(node = 'https://testardor.jelurida.com', isTestnet=true) 
           <td class="date">${time}</td>
           <td class="amount">${(+amount).toFixed(8)} ${coin.toUpperCase()}</td> 
           <td class="url" ><a href="${url}#${hash}" target="_BLANK">${url}</a></td>
-          <td class="account"><a href="https://testardor.xcubicle.com/index.html?chain=IGNIS&account=${account}" target="_BLANK">${account}</a></td>
+          <td class="account"><a href="${NODE}/index.html?chain=IGNIS&account=${account}" target="_BLANK">${account}</a></td>
         `;
       });
 

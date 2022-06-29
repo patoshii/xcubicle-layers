@@ -1,4 +1,4 @@
-const defaultNode = 'https://testardor.xcubicle.com';
+const defaultNode = 'https://a1.annex.network';
 
 chrome.runtime.onInstalled.addListener(async function() {
   chrome.contextMenus.create({
@@ -26,43 +26,54 @@ chrome.runtime.onInstalled.addListener(async function() {
   });
 
   // preset supported domains
-  const supportedDomains = 'gofundme,patreon,linkedin,github,kickstarter,facebook,twitter,stackoverflow|stackexchange,ebay,youtube,fiverr,google,t';
-  chrome.storage.local.set({ supportedDomains });
-
-  // const supportedTokens = 'btc,ltc,xmr,eos,eth,usdc,usdt';
-  const supportedTokens = 'btc,eth,usdc,usdt,dai,ignis';
+  const supportedDomains = [
+    'gofundme',
+    'patreon',
+    'linkedin',
+    'github',
+    'kickstarter',
+    'facebook',
+    'twitter',
+    'stackoverflow|stackexchange',
+    'ebay',
+    'youtube',
+    'fiverr',
+    'google',
+    't',
+    'blockchain',
+    'xmrchain',
+    'ardor'
+  ];
+  chrome.storage.local.set({ supportedDomains: supportedDomains.join(',') }); 
+  const supportedTokens = 'btc,ltc,eth,usdc,usdt,dai,oxen,xmr';
   chrome.storage.local.set({ supportedTokens }); 
 
   try {
-    const result = await validateNode('https://testardor.xcubicle.com');
+    const result = await validateNode(defaultNode);
+    console.log(result)
     if (
       result &&
       result.blockchainState === 'UP_TO_DATE' &&
       result.blockchainState !== 'DOWNLOADING'
     ) {
       chrome.storage.local.set({
-        activeNode: 'https://testardor.xcubicle.com'
+        activeNode: defaultNode
       });
       chrome.storage.local.set({
-        testnetNode: 'https://testardor.xcubicle.com'
+        testnetNode: defaultNode
       });
       chrome.storage.local.set({ isTestnet: result.isTestnet });
     } else {
-      console.log(
-        'check testardor.xcubicle node. \nBLOCKCHAINSTATE: ' +
-          result.blockchainState
-      );
+      console.log(`Check ${defaultNode}. \Blockchain State:  ${result.blockchainState}`);
+      chrome.storage.local.set({ activeNode: 'https://a1.annex.network' });
       chrome.storage.local.set({
-        activeNode: 'https://testardor.jelurida.com'
-      });
-      chrome.storage.local.set({
-        testnetNode: 'https://testardor.jelurida.com'
+        testnetNode: 'https://a1.annex.network'
       });
     }
   } catch (error) {
     console.log(error, 'check testardor.xcubicle node.');
-    chrome.storage.local.set({ activeNode: 'https://testardor.jelurida.com' });
-    chrome.storage.local.set({ testnetNode: 'https://testardor.jelurida.com' });
+    chrome.storage.local.set({ activeNode: 'https://a1.annex.network' });
+    chrome.storage.local.set({ testnetNode: 'https://a1.annex.network' });
   }
 }); // onInstalled
 
@@ -287,7 +298,7 @@ async function checkPledge(node, urlHash, customTime, nodeType) {
           )
         ) {
           const tagArray = data.tags.split(',');
-          if (!data.tags.includes('ARDOR') || !tagArray[3].includes('ARDOR'))
+          if (!data.tags.includes('COIN') || !tagArray[3].includes('COIN'))
             continue;
           if (data.name != urlHash) continue;
           found = true;
@@ -400,7 +411,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     const url = `${node}/nxt?requestType=searchTaggedData&chain=${chain}&tag=${tag}&query=${query}`;
     getApiRequest({ url }, sendResponse);
   } else if (requestType == 'getTaggedData') {
-    const url = `${node}/nxt?requestType=getTaggedData&chain=${chain}&transactionFullHash=${query}`;
+    const url = `${node}/nxt?requestType=getTaggedData&chain=${chain}&transaction=${query}`;
     getApiRequest({ url }, sendResponse);
   } else if (requestType == 'getAliases') {
     // const url = `${node}/nxt?requestType=getAliases&chain=${chain}&account=${account}`
@@ -409,19 +420,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   } else if (requestType == 'searchAssets') {
     const url = `${node}/nxt?requestType=searchAssets&query=${query}`;
     getApiRequest({ url }, sendResponse);
-  } else if (requestType == 'getAccountPublicKey') {
-    const url = `${node}/nxt?requestType=getAccountPublicKey&account=${account}`;
-    getApiRequest({ url }, sendResponse);
   } else if (requestType == 'getAssetProperties') {
     const url = `${node}/nxt?requestType=getAssetProperties&asset=${asset}&setter=${MASTER_ACCOUNT}`;
     getApiRequest({ url }, sendResponse);
   } else if (requestType == 'getConversionValue') {
     const url = `https://layers.xcubicle.com/cryptoconvert.php?coin=${coin}`;
     getApiRequest({ url }, sendResponse);
-  } else if (requestType == 'sendMoney') {
-    const url = `${node}/nxt?requestType=sendMoney&chain=IGNIS&recipient=${recipient}&secretPhrase=${secretPhrase}&feeNQT=100000&amountNQT=${amount}`;
-    getApiRequest({ url, method: 'POST' }, sendResponse);
-  } else if (requestType == 'activateAccount') {
+  }else if (requestType == 'activateAccount') {
     const url = `https://layers.xcubicle.com/xactivate.php?address=${account}&publicKey=${publicKey}`;
     getApiRequest({ url }, sendResponse);
   } else if (requestType == 'setAccountProperty') {
@@ -429,8 +434,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     getApiRequest({ url, method: 'POST' }, sendResponse);
   } else if (requestType == 'sendMessage') {
     // Send message requires checking weather the user is logged in, by looking at the chrome.storage
-    const referenceTx = `2:dfe36cf9f8dff41f30f1cde92717ee6f1ac2c5342bba7d691b5e0b75a6bc5204`;
-    const data = `&recipient=${recipient}&secretPhrase=${secretPhrase}&chain=ignis&message=pledge&messageToEncrypt=${message}&deadline=2&broadcast=true&messageToEncryptIsText=true&encryptedMessageIsPrunable=true&feeNQT=0&referencedTransaction=${referenceTx}`; 
+    const referenceTx = `2:e600d12a862451add88047a40b99b782bd0e0b4c320ebdf2dae9ba980b4a34`;
+    const data = `&recipient=${recipient}&secretPhrase=${secretPhrase}&chain=ignis&message=pledge&messageToEncrypt=${message}&deadline=2&broadcast=true&messageToEncryptIsText=true&encryptedMessageIsPrunable=true&feeNQT=0&referencedTransactionFullHash=${referenceTx}`; 
     const url = `${node}/nxt?requestType=sendMessage${data}`; 
     userLoggedIn().then(isLoggedIn => { 
       if(isLoggedIn) {
@@ -440,7 +445,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       }
     });
   } else if (requestType == 'getTransaction') {
-    const url = `${node}/nxt?requestType=getTransaction&chain=ignis&fullHash=${query}`;
+    const url = `${node}/nxt?requestType=getTransaction&fullHash=${query}`;
     getApiRequest({ url }, sendResponse);
   } else if (request.requestType == 'getEosAccountName') {
     getEosAccountName(request.publicKey, sendResponse);

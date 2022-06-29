@@ -3,8 +3,8 @@
   var coins = {};
   var balance = 0;
   var urlHash = "";
-  var GLOBAL = { node: "https://testardor.jelurida.com" };
-  var MASTER_ACCOUNT = "ARDOR-XXXX-XXXX-5496-B3YAC";
+  var GLOBAL = { node: "https://a1.annex.network" };
+  var MASTER_ACCOUNT = "COIN-XXXX-XXXX-5496-B3YAC";
   var CURRENT_URL = "";
   var SUPPORTED_TOKENS = [];
   var coinAddress;
@@ -16,7 +16,21 @@
 
   var reload = false;
 
-  var observer = null;
+  var AVAILABLE_PAGE_ELM_FOUND = false;
+
+
+  const icons = {
+    btc: chrome.extension.getURL("../images/btc-icon.png"),
+    ltc: chrome.extension.getURL("../images/ltc-icon.png"),
+    xmr: chrome.extension.getURL("../images/xmr-icon.png"),
+    eos: chrome.extension.getURL("../images/eos-icon.png"),
+    eth: chrome.extension.getURL("../images/eth-icon.png"),
+    usdc: chrome.extension.getURL("../images/usdc-icon.png"),
+    usdt: chrome.extension.getURL("../images/usdt-icon.png"),
+    dai: chrome.extension.getURL("../images/dai-icon.png"),
+    coin: chrome.extension.getURL("../images/ignis-icon.png"),
+    oxen: chrome.extension.getURL("../images/oxen-icon.png"),
+  }; 
 
   chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     reload = false;
@@ -52,9 +66,9 @@
         }
         if (result["activeNode"]) GLOBAL["node"] = result["activeNode"];
 
-        if (result["supportedTokens"])
-          SUPPORTED_TOKENS = result["supportedTokens"].split(",");
+        if (result["supportedTokens"]) SUPPORTED_TOKENS = result["supportedTokens"].split(",");
 
+         const supportAllPages = result["supportedDomains"].split(",").includes("all") && i("xc-dialog") === null;
         if (result["pageSupported"]) {
           // validate user before doing any other computations.
           let temp;
@@ -81,104 +95,11 @@
             return;
           }
           
-          let found = false;
-          // Two templates for gofundme
-          if (
-            document.querySelector(".primary-ctas") ||
-            document.querySelector(".p-campaign-sidebar")  ||
-            document.querySelector(".js-sm-up-container .js-donate-now") 
-          ) {
-            // Old main domain template
-            // New main domain template
-            // charity subdomain template
-            $appendToButton =
-              document.querySelector(".js-xl-donate-button") ||
-              document.querySelector('[data-element-id="btn_share"]') ||
-              document.querySelector('.js-sm-up-container .js-donate-now');
-            found = true;
-          } else if (
-            document.querySelector(".sc-fzoLsD.etpOIT") 
-          ) {
-            $appendToButton = document.querySelector(".sc-fzoLsD.etpOIT");
-            found = true;
-          } else if (
-            document.querySelector(".pv-s-profile-actions__overflow")
-          ) {
-            linkedInButton(
-              document.querySelector(".pv-s-profile-actions__overflow")
-            );
-          } else if (/^https:\/\/github.com/.test(location.href)) {
-            $appendToButton = document.querySelector(
-              '[aria-label="Select assignees"]'
-            );
-            found = true;
-          } else if (document.querySelector(".NS_projects__rewards_list ol")) {
-            // kickStarters
-            $appendToButton = document.querySelector(
-              ".NS_projects__rewards_list ol"
-            );
-            found = true;
-          } else if (document.querySelector(".bounty-link.bounty")) {
-            // stackoverflow
-            bountyButton(document.querySelector(".bounty-link.bounty"));
-          } else if (document.querySelector(".ProfileSidebar .PhotoRail")) {
-            $appendToButton = document.querySelector(
-              ".ProfileSidebar .PhotoRail"
-            );
-            found = true;
-          } else if(document.querySelector('header > div > div > div > div > div + div + div')) {
-            $appendToButton = document.querySelector('header > div > div > div > div > div + div + div');
-            found = true; 
-          } else if (/^https:\/\/www.facebook.com.*/.test(location.href)) {
-            // facebook
-
-            // pagerefresh doesn't work due to how the site was made, we have to monitor it when we land on this page
-            // we will give it about 20s to find the right element, or when it's found, remove the monitoring.
-            let counter = 0;
-            let waitForPageToLoad = setInterval(() => {
-              if (counter > 20) clearInterval(waitForPageToLoad);
-              if (
-                document.getElementById("profile_timeline_tiles_unit_pagelets")
-              ) {
-                $appendToButton = document.getElementById(
-                  "profile_timeline_tiles_unit_pagelets"
-                );
-                clearInterval(waitForPageToLoad);
-                init();
-              }
-              counter += 1;
-            }, 1000);
-          } else if (document.getElementById("RightSummaryPanel")) {
-            // ebay
-            $appendToButton = document.querySelector("#RightSummaryPanel")
-              .lastChild;
-            found = true;
-          } else if (/^https:\/\/www.youtube.com/.test(location.href)) {
-            // youtube pledge allowed, don't inject box yet
-            found = true;
-          } else if (
-            /^https:\/\/www.fiverr.com/.test(location.href) &&
-            document.querySelector(
-              ".contact-seller.display-contact-seller"
-            )
-          ) {
-            // fiverr
-            $appendToButton = document.querySelector(
-              ".contact-seller.display-contact-seller"
-            );
-            document.querySelector('.sidebar.poly-sticky').style.position = "static";
-            found = true;
-          } else if (document.querySelector(".tgme_page") !== null) {
-            $appendToButton = document.querySelector(".tgme_page").lastChild;
-            found = true;
-          }
-          if (found) {
+          AVAILABLE_PAGE_ELM_FOUND = pageSupportedInit();
+          if (AVAILABLE_PAGE_ELM_FOUND) {
             init();
           }
-        } else if (
-          result["supportedDomains"].split(",").includes("all") &&
-          i("xc-dialog") === null
-        ) {
+        } else if (supportAllPages) {
           const btn = ContentUtils.createFloatButton(GLOBAL["node"]); 
           showPopupButton(btn);
         } else {
@@ -186,6 +107,93 @@
         }
       }
     );
+  }
+
+  /**
+   * Search the current DOM for the matching element.
+   * Set the current $appendToButton value of the found element
+   * 
+   * @returns boolean found
+   */
+  function pageSupportedInit() {
+    let found = false; 
+    // Two templates for gofundme 
+    if (/^https:\/\/(.*\.)?gofundme.com/.test(location.href)) {
+      // Old main domain template
+      // New main domain template
+      // charity subdomain template
+      $appendToButton =
+        document.querySelector(".js-xl-donate-button") ||
+        document.querySelector('[data-element-id="btn_share"]') ||
+        document.querySelector('.js-sm-up-container .js-donate-now');
+      found = true;
+    } else if (/^https:\/\/(www\.)?patreon.com/.test(location.href)) {
+      $appendToButton = document.querySelector(".sc-fzoLsD.etpOIT");
+      found = true;
+    } else if (/^https:\/\/(www\.)?linkedin.com/.test(location.href)) {
+      linkedInButton(document.querySelector(".pv-s-profile-actions__overflow"));
+    } else if (/^https:\/\/github.com/.test(location.href)) {
+      $appendToButton = document.querySelector('[aria-label="Select assignees"]');
+      found = true;
+    } else if (/^https:\/\/(www\.)?kickstarter.com/.test(location.href)) {
+      // kickStarters
+      $appendToButton = document.querySelector(".NS_projects__rewards_list ol");
+      found = true;
+    } else if (/^https:\/\/(www\.)?stackoverflow.com/.test(location.href)) {
+      // stackoverflow
+      bountyButton(document.querySelector(".question .comments-link"));
+    } else if (document.querySelector(".ProfileSidebar .PhotoRail")) {
+      $appendToButton = document.querySelector( ".ProfileSidebar .PhotoRail");
+      found = true;
+    } else if(/^https:\/\/(www\.)?twitter.com/.test(location.href) && document.querySelector('header > div > div > div > div > div + div + div')) {
+      $appendToButton = document.querySelector('header > div > div > div > div > div + div + div');
+      found = true; 
+    } else if (/^https:\/\/(www\.)?facebook.com.*/.test(location.href)) {
+      // facebook 
+      // pagerefresh doesn't work due to how the site was made, we have to monitor it when we land on this page
+      // we will give it about 20s to find the right element, or when it's found, remove the monitoring.
+      slowPageTimer('#profile_timeline_tiles_unit_pagelets');
+    } else if (/^https:\/\/(www\.)?ebay.com/.test(location.href) && document.getElementById("RightSummaryPanel")) {
+      // ebay
+      $appendToButton = document.querySelector("#RightSummaryPanel").lastChild;
+      found = true;
+    } else if (/^https:\/\/(www\.)?youtube.com/.test(location.href)) {
+      // youtube pledge allowed, don't inject box yet
+      found = true;
+    } else if ( /^https:\/\/(www\.)?fiverr.com/.test(location.href) ){
+      // fiverr
+      $appendToButton = document.querySelector( ".contact-seller.display-contact-seller");
+      document.querySelector('.sidebar.poly-sticky').style.position = "static";
+      found = true;
+    } else if (/^https:\/\/(www\.)?t.me/.test(location.href)) {
+      $appendToButton = document.querySelector(".tgme_page").lastChild;
+      found = true;
+    } else if(/^https:\/\/(www\.)?blockchain.com\/(btc|eth)\/address\//.test(location.href)) {
+      $appendToButton = document.querySelector('.fieq4h-0.eGdsW:nth-child(3) > div .fieq4h-0.eGdsW .ild1xh-1.dBgUTl') || 
+                          document.querySelector('.fieq4h-0.eGdsW:nth-child(3) > div .fieq4h-0.eGdsW .ahwase-1.dZEFco');
+      found = true;
+    } else if (/^https:\/\/(www.)?xmrchain.net\/search\?value=/.test(location.href)) { 
+      $appendToButton = document.querySelector('body div:nth-child(2) h4');
+      found = true; 
+    } else if (/^https:\/\/(www\.)?ardor.tools\/account\//.test(location.href)) { 
+      // account for slow load(angular app? loading animation) 
+      slowPageTimer('#accountTable')
+    }
+
+    return found;
+  }
+
+  function slowPageTimer(selector) {
+    let counter = 0;
+    let waitForPageToLoad = setInterval(() => {
+      if (counter > 20) clearInterval(waitForPageToLoad);
+      if (document.querySelector(selector)) {
+        $appendToButton = document.querySelector(selector);
+        clearInterval(waitForPageToLoad);
+        init();
+      }
+      counter += 1;
+    }, 1000); 
   }
 
   function linkedInButton(selector) {
@@ -234,10 +242,10 @@
   }
 
   async function init() {
-    if (!reload && q(".pledge-status-container")) return;
+    if (!reload && q(".pledge-status-container") || !AVAILABLE_PAGE_ELM_FOUND) return;
 
     // to remove random params in URL like querystrings
-    CURRENT_URL = location.origin + location.pathname;
+    CURRENT_URL = getFormattedGoFundMeUrl(location);
     urlHash = await hashUrl(CURRENT_URL);
 
     chrome.storage.local.get(["coins", "balance"], async item => {
@@ -282,7 +290,6 @@
         campaignStatusMarkupContainer(cssID);
         const btcaddress = coins.btcpub;
         drawModal("btcpub", btcaddress);
-        initiateAccount();
       }
     }
   }
@@ -345,26 +352,29 @@
       }, 1000);
     }
 
-    const properties = await getPledgedStatus();
-    if (!properties.status) {
-      q(
-        ".pledge-status"
-      ).innerHTML = `<strong>Be first to make a pledge!</strong>`;
-    } else if (properties.status == "unverified") {
-      const verifyURL = `${location.origin}/${location.pathname
-        .split("/")
-        .pop()}`;
-      const registrationForm = `https://docs.google.com/forms/d/e/1FAIpQLSe0tLkBfglKU3DVf8zkfO2XWSDA9WAZUx95OxkfW8ncU5LLcQ/viewform?usp=pp_url&entry.760043283=${verifyURL}`;
-      q(
-        ".pledge-output"
-      ).innerHTML = `<strong>${properties.status}<strong> <a href=${registrationForm} target="_blank">[?]</a>`;
-    } else {
-      q(".pledge-output").innerHTML = `<strong>${properties.status}</strong>`;
+    try {
+      
+      const properties = await getPledgedStatus();
+      if (!properties.status) {
+        q(
+          ".pledge-status"
+        ).innerHTML = `<strong>Be first to make a pledge!</strong>`;
+      } else if (properties.status == "unverified") {
+        const verifyURL = `${location.protocol}//${getDomainWithoutSubdomain(location.origin)}/${location.pathname.split("/").pop()}`;
+        const registrationForm = `https://docs.google.com/forms/d/e/1FAIpQLSe0tLkBfglKU3DVf8zkfO2XWSDA9WAZUx95OxkfW8ncU5LLcQ/viewform?usp=pp_url&entry.760043283=${verifyURL}`;
+        q(
+          ".pledge-output"
+        ).innerHTML = `<strong>${properties.status}<strong> <a href=${registrationForm} target="_blank">[?]</a>`;
+      } else {
+        q(".pledge-output").innerHTML = `<strong>${properties.status}</strong>`;
+      }
+
+      delete properties.status;
+
+      handleAltCoinPropertyResponse(properties);
+    } catch (error) { 
+      console.error(error)
     }
-
-    delete properties.status;
-
-    handleAltCoinPropertyResponse(properties);
   }
 
   // filter out zero-balance coins and only work on the coins with money in it.
@@ -420,28 +430,7 @@
     }
   }
 
-  function initiateAccount() {
-    onMessageAPIWrapper({
-      requestType: "getAccountPublicKey",
-      node: GLOBAL["node"],
-      account: coins["nxtaddr"]
-    }).then(async result => {
-      try {
-        if (!result.publicKey && !result.errorDescription) {
-          onMessageAPIWrapper({
-            node: GLOBAL["node"],
-            requestType: "sendMoney",
-            chain: "IGNIS",
-            recipient: MASTER_ACCOUNT,
-            secretPhrase: coins["nxtpass"],
-            amount: 100000000
-          }).then(response => console.log(response));
-        }
-      } catch (error) {
-        console.log("Layers Error: ", error);
-      }
-    });
-  } 
+ 
 
  function toggleGofundmeDefaultBtns({show}) {
     if(show) { 
@@ -509,7 +498,7 @@
     modal.setAttribute("class", "close");
     modal.setAttribute(
       "style",
-      "border: 1px solid #eee;padding: 0 0 9px; margin: 0 auto 10px auto; background: #eee8d8; clear: both; max-width: 300px"
+      "position: relative;border: 1px solid #eee;padding: 0 0 9px; margin: 0 auto 10px auto; background: #eee8d8; clear: both; max-width: 300px"
     );
 
     const explorerLink = getExplorerLink("btc", btcAddress);
@@ -550,6 +539,7 @@
       }
     });
 
+    recurrenceOptionListener();
     coinSwap();
     pledgeConversionListener();
     submitPledgeListener();
@@ -615,8 +605,7 @@
 
     if (CURRENT_URL.includes('gofundme')) {
       const urlObj = new URL(CURRENT_URL);
-      const path = urlObj.pathname.split('/').pop();
-      const oldURL = `${urlObj.origin}/${path}`;
+      const oldURL = getFormattedGoFundMeUrl(urlObj);
 
       urls['oldURL'] = oldURL;
     }
@@ -639,10 +628,10 @@
           const data = searchResponse.data[i];
           // the label explicitly contains the follow tags only
           const tagArray = data.tags.split(",");
-          if (!data.tags.includes("ARDOR") || !tagArray[3].includes("ARDOR"))
+          if (!data.tags.includes("COIN") || !tagArray[3].includes("COIN"))
             continue;
 
-          const hash = data.transactionFullHash;
+          const hash = data.transaction;
           const result = await onMessageAPIWrapper({
             node: GLOBAL["node"],
             requestType: "getTaggedData",
@@ -660,7 +649,6 @@
       }
     }
 
-    console.log(pledgeList)
     if (pledgeList.length) {
       pledgeList.sort((a, b) => (a.timestamp < b.timestamp ? 1 : -1));
       pledgeList = removeDuplicatePledgeNotes(pledgeList);
@@ -697,18 +685,6 @@
       const $list = q(".crypto-pledges .crypto-pledge-list");
 
       try {
-        const icons = {
-          btc: chrome.extension.getURL("../images/btc-icon.png"),
-          ltc: chrome.extension.getURL("../images/ltc-icon.png"),
-          xmr: chrome.extension.getURL("../images/xmr-icon.png"),
-          eos: chrome.extension.getURL("../images/eos-icon.png"),
-          eth: chrome.extension.getURL("../images/eth-icon.png"),
-          usdc: chrome.extension.getURL("../images/usdc-icon.png"),
-          usdt: chrome.extension.getURL("../images/usdt-icon.png"),
-          dai: chrome.extension.getURL("../images/dai-icon.png"),
-          ignis: chrome.extension.getURL("../images/ignis-icon.png"),
-        };
-
         let total = {
           btc: 0,
           xmr: 0,
@@ -827,7 +803,7 @@
     let assetID;
 
     for(let campaignName of campaignNames) { 
-      const currentUrlPattern = `${location.origin}/${campaignName}`;
+      const currentUrlPattern = location.href.includes('gofundme.com') ? getFormattedGoFundMeUrl(location) : `${location.origin}/${campaignName}`;
       let escapedURL = currentUrlPattern.replace(
         /[-:/[\]{}()*+?.,\\^$|#\s]/g,
         "\\$&"
@@ -839,7 +815,7 @@
           chain: "IGNIS",
           query: escapedURL
         });
-        console.log(response)
+
         if(response.assets.length) {
           for (let i = 0; i < response.assets.length; i++) {
             if (
@@ -878,7 +854,7 @@
               p.property === "xmr" ||
               p.property === "eth" ||
               p.property === "eos" ||
-              p.property === "ignis"
+              p.property === "coin"
             ) {
               currencies[p.property] = p.value;
             }
@@ -910,16 +886,23 @@
       const erc20Token = erc20Tokens.find(token => token === coinSelect);
       if (erc20Token !== undefined) coinSelect = "ethpub";
 
+      console.log(coinSelect)
       coinAddress = coins[getPublicKeyIndex(coinSelect)];
+
+      const isHiddenBalanceCoin = (coinSelect) => {
+        if(coinSelect === "xmr") return true;
+        if(coinSelect === "oxen") return true; 
+        
+        return false;
+      }
 
       try {
         let balanceOutput;
 
         if (coinSelect === "eos") {
           balanceOutput = await handleEOSOutput();
-        } else if (coinSelect === "xmr") {
+        } else if (isHiddenBalanceCoin(coinSelect)) {
           balanceOutput = "Your Balance: Hidden";
-          coinAddress = coins["xmrpub"];
         } else {
           let $pAmtClasses = q(".pledge-amount").classList;
           let $pBtnClasses = q(".pledge-btn").classList;
@@ -958,19 +941,20 @@
 
         const imgBlob = await getImgBlob(coinAddress);
         const url = URL.createObjectURL(imgBlob);
-        const explorerLink = erc20Token
-          ? `https://etherscan.io/token/${getERC20Address(erc20Token)}`
-          : getExplorerLink(coinSelect, coinAddress);
+        const explorerLink = erc20Token ? `https://etherscan.io/token/${getERC20Address(erc20Token)}` : getExplorerLink(coinSelect, coinAddress);
         q("#cdonate").setAttribute("class", "wrap-" + coinLabel.toLowerCase());
         q("#cdonate .balance").innerHTML = balanceOutput;
-        q("#cdonate .coin-qr").src = url;
-        q(
-          "#cdonate .coin-address"
-        ).innerHTML = `<a href="${explorerLink}" target="_blank">${coinAddress}</a>`;
+        q("#cdonate .coin-qr").src = url; 
+        q("#cdonate .coin-address").innerHTML = 
+          `<a href="${explorerLink}" target="_blank">${coinAddress}</a>
+          <img src="${icons[this.value]}" alt="coin-icon" style="width:30px;margin:5px auto 0 auto;"/>
+          `;
         q("#cdonate .pledge-btn").value = "Pledge " + coinLabel;
+        q("#cdonate .pledge-amount").setAttribute('placeholder', `0.00 ${this.value.toUpperCase()}`)
 
         // USD conversion
         q("#total-price .label").textContent = this.value.toUpperCase();
+        q("#total-price > a").href = getCoinPriceLink(this.value);
         let { price } = await onMessageAPIWrapper({
           requestType: "getConversionValue",
           coin: this.value
@@ -1022,7 +1006,8 @@
       pledgeNote,
       usdValue,
       status,
-      campaignStatus;
+      campaignStatus,
+      recurrence;
 
     document.querySelectorAll('#cdonate__init input').forEach(elm => {
       elm.addEventListener('keydown', (event) =>{
@@ -1039,6 +1024,7 @@
       coinChosen = q("#cdonate .coin-options").value;
       coinLabel = coinChosen.toUpperCase();
       pledgeNote = q(".pledge-note").value;
+      recurrence = q(".recurrence-container input").value || 'One time pledge';
       usdValue = q("#pledge-usd-value em")
         ? q("#pledge-usd-value em").textContent
         : 0;
@@ -1068,10 +1054,9 @@
       }
       // For bitcoin, seems like the min-amount is correlate to the current value of the bitcoin
       // min-amount needs to be increased when the bitcoin price goes up
-      if (minimumAmountRequired(coinChosen, amount) === false) {
-        alert(
-          "Not Enough Funds to Pay for Network Fees - Minimum Balance Requirements: .0001 BTC or .0001 ETH"
-        );
+      const formattedCoinChosen = Constant.getCrypto(coinChosen);
+      if (formattedCoinChosen && minimumAmountRequired(coinChosen, amount) === false) {
+        alert(`Not Enough Funds to Pay for Network Fees - Minimum Balance Requirements: ${Constant.minimumAmountEnum[formattedCoinChosen]}`);
         return false;
       }
 
@@ -1081,10 +1066,11 @@
       q("#cdonate__confirm .balance").textContent = `${amount} ${coinLabel}`;
       q("#cdonate__confirm .usd-value").textContent = usdValue;
       q("#cdonate__confirm .campaign-url").textContent =
-        CURRENT_URL.length > 100
-          ? CURRENT_URL.substr(0, 100) + "..."
-          : CURRENT_URL;
+      CURRENT_URL.length > 100
+      ? CURRENT_URL.substr(0, 100) + "..."
+      : CURRENT_URL;
       q("#cdonate__confirm .campaign-status").textContent = campaignStatus;
+      q("#cdonate__confirm .recurrence").textContent = 'Pledge Frequency: ' + recurrence;
       q("#cdonate__confirm .pledge-note").textContent = pledgeNote
         ? "Message: " + pledgeNote
         : "";
@@ -1099,15 +1085,14 @@
       }
       // For bitcoin, seems like the min-amount is correlate to the current value of the bitcoin
       // min-amount needs to be increased when the bitcoin price goes up
-      if (minimumAmountRequired(coinChosen, amount) === false) {
-        alert(
-          "Not Enough Funds to Pay for Network Fees - Minimum Balance Requirements: .0001 BTC or .0001 ETH"
-        );
+      const formattedCoinChosen = Constant.getCrypto(coinChosen);
+      if (formattedCoinChosen && minimumAmountRequired(coinChosen, amount) === false) {
+        alert(`Not Enough Funds to Pay for Network Fees - Minimum Balance Requirements: ${Constant.minimumAmountEnum[formattedCoinChosen]}`);
         return false;
       }
 
       const coinLabel = getCoinLabel(coinChosen);
-      const pubAddress = q("#cdonate .coin-address").textContent;
+      const pubAddress = q("#cdonate .coin-address").textContent.trim();
       const priIndex = getPrivateKeyIndex(coinChosen);
       const privateKey = coins[priIndex];
 
@@ -1115,9 +1100,7 @@
       let hash = urlHash;
 
       if (url.includes("gofundme.com")) {
-        let urlObj = new URL(url);
-        url = `${urlObj.origin}/${urlObj.pathname.split("/").pop()}`;
-        hash = await hashUrl(url);
+        hash = await hashUrl(getFormattedGoFundMeUrl(new URL(url)));
       }
 
       let message = {
@@ -1129,6 +1112,17 @@
         urlHash: hash,
         nxtAddress: coins["nxtaddr"]
       };
+
+      const DELAY_MAP = {
+        "Every day": 24,
+        "Every week" : 7 * 24,
+        "Every month" : 4 * 7 * 24 
+      };
+
+      if(DELAY_MAP[recurrence]) { 
+        //delay,repeat 
+        message.delay = DELAY_MAP[recurrence] + ",99";
+      }
 
       if (pledgeNote) message.pledgeNote = pledgeNote;
 
@@ -1169,13 +1163,42 @@
     });
   }
 
+  function recurrenceOptionListener () {
+    const $options = q('.recurrence-options');
+    const $containerBtn = q('.recurrence-container button');
+    const $mainContainer = i('donate-modal');
+    $containerBtn.addEventListener("click", (e) => { 
+      $options.classList.toggle('visible'); 
+      $mainContainer.classList.toggle('modal_hidden');
+    }); 
+
+    const $list = document.querySelectorAll('.recurrence-options__list li'); 
+
+    for(let list of $list) { 
+      list.addEventListener('click', e => { 
+        const selectedText = e.currentTarget.textContent; 
+
+        $mainContainer.classList.toggle('modal_hidden');
+        q('.recurrence-options__list li.selected').classList.remove('selected');
+        e.currentTarget.classList.add('selected');
+        $containerBtn.textContent = selectedText;
+        q('.recurrence-container input').value = selectedText;
+        $options.classList.toggle('visible'); 
+      }) 
+    } 
+  }
+
   function pledgeConversionListener() {
     const $val = document.getElementById("pledge-usd-value");
     try {
       q(".pledge-amount").addEventListener("input", async function() {
         const coin = q(".coin-options option:checked").value;
         const value = +this.value;
+
         if (value > 0) {
+          Array.from(document.querySelectorAll('#cdonate .fadeToggle')).forEach(elm => {
+            elm.classList.replace('fadeToggle','fadeToggle--off')
+          })
           const usd = await cryptoToUSD(coin, value);
           $val.innerHTML = `<strong>USD Value:</strong> <em>$${usd}</em>`;
           !q(".amount-container").classList.contains("active")
@@ -1186,6 +1209,9 @@
           q(".amount-container").classList.contains("active")
             ? q(".amount-container").classList.remove("active")
             : null;
+            Array.from(document.querySelectorAll('#cdonate .fadeToggle--off')).forEach(elm => {
+              elm.classList.replace('fadeToggle--off','fadeToggle')
+            }) 
         }
       });
     } catch (error) {
@@ -1213,7 +1239,6 @@
             "tx_store",
             location.pathname + ";" + response.fullHash
           );
-
           displayProcessingMsg();
           console.log(`${message["amount"]} ${message["coinChosen"]} pledged.`);
         } else if (response.errorDescription === "Insufficient balance") {
@@ -1242,39 +1267,34 @@
     onMessageAPIWrapper({
       node: GLOBAL["node"],
       requestType: "getTransaction",
-      chain: "IGNIS",
       query: hash
-    }).then(response => {
-      if (response.errorDescription) {
-        localStorage.removeItem("txid");
-      } else {
-        const div = document.createElement("div");
-        const account = coins["nxtaddr"];
-        div.id = "processingMsg";
-        div.innerHTML = `<h2>Pledge Sent!</h2> <p>Processing in 2 hours. Your coins will be forwarded to the recipient if they are "verified". <br><br>If its a crowdfunding campaign it must also be fully funded for at least 14 days to prevent scams.</p><p>If there is not enough funds in your addresses, all your pending pledges on every site will be removed to help reduce spam.</p> Temporary ID: <a href="${GLOBAL["node"]}/index.html?chain=IGNIS&account=${account}" target="_BLANK"> ${hash}</a>`;
-        q("#cdonate__init-btn").before(div);
+    }).then(_ => {
+      const div = document.createElement("div");
+      const account = coins["nxtaddr"];
+      div.id = "processingMsg";
+      div.innerHTML = `<h2>Pledge Sent!</h2> <p>Processing in 2 hours. Your coins will be forwarded to the recipient if they are "verified". <br><br>If its a crowdfunding campaign it must also be fully funded for at least 14 days to prevent scams.</p><p>If there is not enough funds in your addresses, all your pending pledges on every site will be removed to help reduce spam.</p> Temporary ID: <a href="${GLOBAL["node"]}/index.html?account=${account}" target="_BLANK"> ${hash}</a>`;
+      q("#cdonate__init-btn").before(div);
 
-        const $cdonate = document.getElementById("cdonate");
-        const containerHeight = $cdonate.clientHeight;
-        const msgHeight = document.querySelector("#processingMsg").clientHeight;
-        $cdonate.style.height = containerHeight + "px";
+      const $cdonate = document.getElementById("cdonate");
+      const containerHeight = $cdonate.clientHeight;
+      const msgHeight = document.querySelector("#processingMsg").clientHeight;
+      $cdonate.style.height = containerHeight + "px";
 
-        const hideAll = document.querySelectorAll(
-          "#cdonate > *:not(#processingMsg)"
-        );
-        hideAll.forEach((elm, key) => {
-          elm.setAttribute("style", "transition: 2s all; opacity: 0;");
+      const hideAll = document.querySelectorAll(
+        "#cdonate > *:not(#processingMsg)"
+      );
+      hideAll.forEach((elm, key) => {
+        elm.setAttribute("style", "transition: 2s all; opacity: 0;");
+        setTimeout(() => {
+          elm.style.display = "none";
+        }, 1200);
+
+        if (Object.is(hideAll.length - 1, key)) {
           setTimeout(() => {
-            elm.style.display = "none";
-          }, 1200);
-
-          if (Object.is(hideAll.length - 1, key)) {
-            setTimeout(() => {
-              $cdonate.style.height = msgHeight + 20 + "px";
-            }, 1000);
-          }
-        });
-      }
+            $cdonate.style.height = msgHeight + 20 + "px";
+          }, 1000);
+        }
+      });
     });
   }
 
@@ -1410,8 +1430,8 @@
           icon:
             "https://s2.coinmarketcap.com/static/img/coins/64x64/2.png?_=05911ce"
         },
-        Ignis: {
-          url: "https://testardor.xcubicle.com/index.html?chain=IGNIS&account=",
+        Coin: {
+          url: "https://a1.annex.network/index.html?account=",
           icon:
             "https://s2.coinmarketcap.com/static/img/coins/64x64/2276.png?_=05911ce"
         }
@@ -1429,9 +1449,9 @@
           `;
         })
         .join("")}
-				<div class="crypto-pledges">
-					<div class="crypto-pledge-list"></div>
-				</div>
+        <div class="crypto-pledges">
+          <div class="crypto-pledge-list"></div>
+        </div>
       </div> `;
 
       return tgMarketup;
@@ -1457,7 +1477,7 @@
         const data = searchResponse.data[i];
         // the label explicitly contains the follow tags only
         const tagArray = data.tags.split(",");
-        if (!data.tags.includes("ARDOR") || !tagArray[3].includes("ARDOR"))
+        if (!data.tags.includes("COIN") || !tagArray[3].includes("COIN"))
           continue;
 
         const hash = data.transactionFullHash;
@@ -1516,7 +1536,7 @@
               publicKey.substring(publicKey.length - 5);
 
             li += `<li>
-							<div><h4>${time} - <span class="address"><a href="${
+              <div><h4>${time} - <span class="address"><a href="${
               GLOBAL["node"]
             }/index.html?chain=${
               GLOBAL["chain"]
@@ -1524,20 +1544,20 @@
               /ardor-/i,
               ""
             )}</a></span></h4></div>
-								<div class="note">
-									<span class="note-content">
-										<strong>${aliasName} Pledged: ${amtFormatted} ${coin.toUpperCase()}</strong><br />
-										<span class="pledge-msg">${message}</span></br >
-										<div class="publicKey">
-										 Sender Address:
-										 <a href="${getExplorerLink(
+                <div class="note">
+                  <span class="note-content">
+                    <strong>${aliasName} Pledged: ${amtFormatted} ${coin.toUpperCase()}</strong><br />
+                    <span class="pledge-msg">${message}</span></br >
+                    <div class="publicKey">
+                     Sender Address:
+                     <a href="${getExplorerLink(
                        coin,
                        publicKey
                      )}" target="_BLANK">${cutPublicKey}</a>
-										</div>
-									</span>
-								</div>
-							</li >`;
+                    </div>
+                  </span>
+                </div>
+              </li >`;
           } catch (error) {
             console.log(error);
           }
@@ -1578,7 +1598,7 @@
         noteContainer.style = `
           position: absolute;
           width: 130px;
-          height: 80px;
+          height: 90px;
           top: 0;
           right: 0;
           text-align:center;
@@ -1587,9 +1607,8 @@
           font-size: 16px;
           word-break: break-word;
           z-index: 999;
-        `;
-
-        noteContainer.textContent = `${response.data.length} Pledges Detected here. Click Extension to View it.`;
+        `; 
+        noteContainer.textContent = `${response.data.length} Pledges Detected here (${mapURL.split("@")[1]}). View in Layers Extension.`;
         if (!q(".xc-note-container")) document.body.appendChild(noteContainer);
       }
       // }

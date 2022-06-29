@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Xcubicle Layers</title>
+  <link href="./main.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+  <header>
+    <div class="container">
+      <a class="page-title" href="/landing/index.html">Xcubicle Layers</a>
+      <sup></sup>
+    </div>
+  </header>
+
+  <div class="box other-pledges">
+    <h3>List of Pledges:</h3>
+    <div class="pledge-contents">
+      <div class="loading">
+        <div class="loading-bar"></div>
+        <div class="loading-bar"></div>
+        <div class="loading-bar"></div>
+        <div class="loading-bar"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container search">
+    <h1>Search Pledges & Notes by URL</h1>
+    <input type="text" class="single" name="url" placeholder="https://www.google.com"> <a class="btn search">Search</a>
+  </div>
+
+  <div class="container campaign-info">
+    <h3 class="ptitle"></h3>
+    <div id="total-pledges" class="box">
+      <h3>Crypto Pledges</h3>
+      <small class="pledge-status"><b>Status:</b> <em class="pledge-output"> <b>Unclaimed</b> &gt; Verified &gt; Pledges
+          Claimed</em></small>
+      <ul class="pledged-total">
+        <li class="btc">
+          <h5>Bitcoin</h5>
+          <span>0</span>
+          <sup>($0)</sup>
+        </li>
+        <li class="xmr">
+          <h5>Monero</h5>
+          <span>0</span>
+          <sup>($0)</sup>
+        </li>
+        <li class="eos">
+          <h5>EOS</h5>
+          <span>0</span>
+          <sup>($0)</sup>
+        </li>
+        <li class="eth">
+          <h5>Ethereum</h5>
+          <span>0</span>
+          <sup>($0)</sup>
+        </li>
+        <li class="usdc">
+          <h5>DAI / USD</h5>
+          <span>0</span>
+          <sup>($0)</sup>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="box recent-pledge">
+    <div class="loading">
+      <div class="loading-bar"></div>
+      <div class="loading-bar"></div>
+      <div class="loading-bar"></div>
+      <div class="loading-bar"></div>
+    </div>
+  </div>
+
+  <div class="container statistic"></div>
+
+  <div class="container result">
+    <div class="loader-overlay">
+      <div class="loader"></div>
+      <h2>Fetching data</h2>
+    </div>
+  </div>
+
+  <div class="container note-content">
+    <div class="notes" id="public-note-list">
+      <h2>Public Notes <em><a href="#" target="_blank"></a></em></h2>
+      <!-- <button id="self-note">Show My Notes Only</button> -->
+      <!-- <button id="toggle-global-note">Hide Sitewide Notes</button> -->
+      <ul class="list-content">
+      </ul>
+    </div><!-- #public-note-list -->
+  </div>
+
+  <script src="./lib/snarkdown.js"></script>
+  <script src="./lib/pictogrify/pictogrify.js"></script>
+  <script src="./main.js"></script>
+</body>
+
+</html>

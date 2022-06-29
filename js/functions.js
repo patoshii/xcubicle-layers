@@ -1,5 +1,4 @@
 "use strict"
-
 /**
  * Get the node type of the current ardor node
  * @param {string} node Ardor server URL
@@ -44,7 +43,7 @@ const getAccountAlias = function (node, account) {
 }
 
 const getMasterAccountAlias = function (node, account) {
-  const masterArdor = 'ARDOR-XXXX-XXXX-5496-B3YAC';
+  const masterArdor = 'COIN-XXXX-XXXX-5496-B3YAC';
   return getRequest(`${node}/nxt?requestType=getAliases&chain=ignis&account=${masterArdor}`).then(result => {
     if (result.aliases) {
       let found = false, aliasName, uri;
@@ -286,9 +285,11 @@ const getDateFormatted = function () {
 const getArdorDateFormatted = function (timestamp, nodeType = "Testnet") {
   if (typeof timestamp === "undefined") return 0;
 
+  // TODO: Setting both EPOCH time the same, but ideally we can remove Testnet
+  // Since we are only going to use Mainnet for Annex network
   const EPOCH_BEGINNING = {
-    Testnet: 1514296800000 - 500,
-    Mainnet: 1514764800000 - 500
+    Testnet: 1614340800000 - 500,
+    Mainnet: 1614340800000 - 500
   }
 
   const dateObject = new Date(timestamp * 1000 + EPOCH_BEGINNING[nodeType]),
@@ -669,6 +670,8 @@ function altCoinCode(altcoin) {
       return 'seg';
     case 'monero':
       return 'xmr';
+    case 'oxen':
+      return 'oxen';
   }
   return '';
 } //func altCoinCode
@@ -679,8 +682,11 @@ function formatCryptoDecimals(coin, amt) {
   if (amt == 0) return 0;
   // xmr = 12
   // eth/eos = 18
+  coin = coin.toLowerCase();
   switch (coin) {
-    case 'btc': return (amt / 100000000).toFixed(8);
+    case 'btc':
+    case 'ltc':
+       return (amt / 100000000).toFixed(8);
     case 'xmr': return (amt / 100000000).toFixed(8);
     case 'eth': return (amt / 1000000000000000000).toFixed(8);
     case 'eos': return (amt / 1000000000000000000).toFixed(4);
@@ -688,7 +694,7 @@ function formatCryptoDecimals(coin, amt) {
     case 'usdt':
     case 'usdc': return (amt / 1e6).toFixed(6);
     case 'dai': return (amt / 1e18).toFixed(6);
-    case 'ignis': return (amt / 1e8).toFixed(6);
+    case 'coin': return (amt / 1e8).toFixed(6);
     default: return amt;
   }
 }//func formatCryptoDecimals
@@ -700,11 +706,11 @@ async function getBalanceResponse(coin, address, erc20Token=null) {
     const url = `https://api.etherscan.io/api?module=account&action=tokenbalance&contractaddress=${erc20Token}&address=${address}&tag=latest&apikey=JEGKUXE7AQ66FQQCPRDPSJU21MYXIFXE5E`;
     return getRequest(url);
   } 
-  if(coin.toLowerCase() === 'ignis') { 
+  if(coin.toLowerCase() === 'coin') { 
     //call to bg script so content script doens't complain 
     const balance = await onMessageAPIWrapper({
       requestType: "getBalance",
-      node: 'https://testardor.xcubicle.com',
+      node: 'https://a1.annex.network',
       chain: coin,
       account: address, 
     });
@@ -723,11 +729,11 @@ function onMessageAPIWrapper(data) {
     });
   });
 }
-function getBalance(chain, account) {
+function getBalance(node, chain, account) {
   if (!account) console.error('Account is need to check the balance.');
   return window
     .fetch(
-      `https://testardor.xcubicle.com/nxt?requestType=getBalance&chain=${chain}&account=${account}`,
+      `${node}/nxt?requestType=getBalance&chain=${chain}&account=${account}`,
       {
         method: 'GET'
       }
@@ -766,12 +772,14 @@ function getExplorerLink(coin, address) {
        return `https://blockchair.com/litecoin/address/${address}`;
     case 'xmr':
     case 'monero':
-       return `https://duckduckgo.com/?q=qr+code+${address}`;
+    case 'oxen':
+    case 'loki':
+       return `https://duckduckgo.com/?q=qr+code+${address}`; 
     case 'eth':
     case 'ethereum':
        return `https://etherscan.io/address/${address}`;
     case 'eos': return `https://bloks.io/key/${address}`;
-    case 'ignis': return `https://testardor.xcubicle.com/index.html?chain=IGNIS&account=${address}`;
+    case 'coin': return `https://a1.annex.network/index.html?chain=IGNIS&account=${address}`;
     default: return 'javascript:void(0)';
   }
 }
@@ -813,7 +821,7 @@ function getPrivateKeyIndex(inputValue) {
   if (inputValue.includes('spend')) return 'xmrpri-spend';
   if (inputValue.includes('view')) return 'xmrpri-view';
   if (inputValue.includes('nxt')) return 'nxtpass';
-  if (inputValue.includes('ignis')) return 'nxtpass';
+  if (inputValue.includes('coin')) return 'nxtpass';
 }
 
 function getPublicKeyIndex(inputValue) {
@@ -824,10 +832,12 @@ function getPublicKeyIndex(inputValue) {
   if (inputValue.includes('usdt')) return 'ethpub';
   if (inputValue.includes('dai')) return 'ethpub';
   if (inputValue.includes('ltc')) return 'ltcpub';
+  if (inputValue.includes('xmr')) return 'xmrpub';
+  if (inputValue.includes('oxen')) return 'oxenpub';
   if (inputValue.includes('spend')) return 'xmrpub-spend';
   if (inputValue.includes('view')) return 'xmrpub-view';
   if (inputValue.includes('nxt')) return 'nxtaddr';
-  if (inputValue.includes('ignis')) return 'nxtaddr';
+  if (inputValue.includes('coin')) return 'nxtaddr';
 }
 
 function getCoinLabel(inputValue) {
@@ -838,11 +848,12 @@ function getCoinLabel(inputValue) {
   if (inputValue.includes('spend')) return 'MoneroSpend';
   if (inputValue.includes('view')) return 'MoneroView';
   if (inputValue.includes('xmr')) return 'Monero';
+  if (inputValue.includes('oxen')) return 'Oxen';
   if (inputValue.includes('nxt')) return 'Ardor';
   if (inputValue.includes('usdc')) return 'USDC';
   if (inputValue.includes('usdt')) return 'USDT';
   if (inputValue.includes('dai')) return 'DAI';
-  if (inputValue.includes('ignis')) return 'Ignis';
+  if (inputValue.includes('coin')) return 'COIN';
 
   return 'Unknown';
 }
@@ -854,7 +865,7 @@ function getERC20Address(token) {
 }
 
 function formatBalanceMessage(inputValue, balance) {
-  const regex = new RegExp(/btc|eth|ltc|xmr|eos|ignis/, 'gi');
+  const regex = new RegExp(/btc|eth|ltc|xmr|eos|coin/, 'gi');
   const coinType = inputValue.match(regex);
   if (coinType) {
     const label = coinType[0].toUpperCase();
@@ -864,7 +875,7 @@ function formatBalanceMessage(inputValue, balance) {
     if (label == 'LTC') return `Your Balance: ${balance / 100000000} LTC`;
     if (label == 'ETH') return `Your Balance: ${balance / (Math.pow(10, 18))} ETH`;
     if (label == 'EOS') return `Your Balance: ${balance / 10000} EOS`;
-    if (label == 'IGNIS') return `Your Balance: ${balance / 100000000} IGNIS`;
+    if (label == 'COIN') return `Your Balance: ${balance / 100000000} COIN`;
   }
 }
 
@@ -884,14 +895,17 @@ function allowedPages(location) {
 function allowedPledge(location) {
   return location.hostname.includes('gofundme.com')
     || location.hostname.includes('patreon.com')
-    || /^https:\/\/[www.]*t.me\/[a-zA-Z0-9_]*$/.test(location.href)
-    || /^https:\/\/www.kickstarter.com.*/.test(location.href)
+    || /^https:\/\/(www\.)?t.me\/[a-zA-Z0-9_]*$/.test(location.href)
+    || /^https:\/\/(www\.)?kickstarter.com.*/.test(location.href)
     || /^https:\/\/[a-zA-Z.]*ebay\.com\/itm\//.test(location.href)
-    || /^https:\/\/github.com/.test(location.href)
-    || /^https:\/\/www.youtube.com/.test(location.href)
-    || /^https:\/\/www.fiverr.com/.test(location.href)
-    || /^https:\/\/www\.google\.com\/((?!search).)/.test(location.href)
-    || /^https:\/\/www.facebook.com.*/.test(location.href);
+    || /^https:\/\/(www\.)?github.com/.test(location.href)
+    || /^https:\/\/(www\.)?youtube.com/.test(location.href)
+    || /^https:\/\/(www\.)?fiverr.com/.test(location.href)
+    || /^https:\/\/(www\.)?google\.com\/((?!search).)/.test(location.href)
+    || /^https:\/\/(www\.)?blockchain\.com\/(btc|eth)\/address\//.test(location.href)
+    || /^https:\/\/(www\.)?xmrchain.net\/search\?value=/.test(location.href)
+    || /^https:\/\/(www\.)?ardor.tools\/account\//.test(location.href)
+    || /^https:\/\/(www\.)?facebook.com.*/.test(location.href);
 }
 
 function supportedDomainList(supportedDomains, location) {
@@ -929,36 +943,148 @@ function getSupportedCoins() {
   })
 } 
 
+function getMinimumAmountRequired (coin) {
+
+}
+
+// FIXME: Make this a separate file? We will have to import this file on multiple HTML files...
+class Constant {
+  // enum
+  static cryptoEnum = {
+    BTC: 'BITCOIN',
+    ETH: 'ETHEREUM',
+    LTC: 'LITECOIN',
+    XMR: 'MONERO',
+    OXEN: 'OXEN',
+    EOS: 'EOS',
+    COIN: 'COIN'
+  };
+
+  static minimumAmountEnum = {
+    BITCOIN: 0.001,
+    ETHEREUM: 0.001,
+    LITECOIN:0.002,
+    MONERO: 0.002,
+    OXEN: 0.002,
+    EOS: 0.002,
+    COIN: 0.002
+  };
+
+  static getCrypto(val) {
+    val = val.toUpperCase();
+
+    switch (val) {
+      case 'BTC': 
+      case 'BITCOIN':
+        return this.cryptoEnum.BTC;
+      case'ETH': 
+      case'ETHEREUM': 
+      case 'USDC': 
+      case 'USDT':
+      case  'DAI':
+        return this.cryptoEnum.ETH;
+      case 'LTC': 
+      case 'LITECOIN':
+        return this.cryptoEnum.LTC;
+      case 'XMR': 
+      case 'MONERO':
+        return this.cryptoEnum.XMR;
+      case 'OXEN':
+        return this.cryptoEnum.OXEN;
+      case 'EOS':
+        return this.cryptoEnum.EOS;
+      case 'COIN':
+        return this.cryptoEnum.COIN;
+      default:
+        return undefined;
+    }
+  }
+}
+
 function minimumAmountRequired(coin, amount) { 
   coin = coin.toUpperCase();
-  if(amount === 0) return false;
+  if(!amount || !isNaN(+amount) || amount === 0) return false;
 
-  if(coin === 'BTC' || coin ==='BITCOIN') { 
-    return amount && +amount >= 0.0001;
+  const crypto = Constant.getCrypto(coin);
+
+  return crypto && amount >= Constant.minimumAmountEnum[crypto];
+}
+
+function isEmailAddress(email) {
+  const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(String(email).toLowerCase());
+}
+
+function getCoinPriceLink(coin) {
+  const defaultLink = "https://coinmarketcap.com";
+  if(!coin || typeof coin !== 'string') return defaultLink;
+
+  let defaultEndpoint = `${defaultLink}/currencies`;
+  coin = coin.toLowerCase();
+
+  switch(coin) { 
+    case 'btc': 
+    case 'bitcoin': 
+      return `${defaultEndpoint}/bitcoin`;
+    case 'ltc': 
+    case 'litcoin': 
+      return `${defaultEndpoint}/litcoin`;
+    case 'xmr': 
+    case 'moner': 
+      return `${defaultEndpoint}/monero`;
+    case 'oxen': 
+    case 'loki': 
+      return `${defaultEndpoint}/oxen`;
+    case 'eos': 
+      return `${defaultEndpoint}/eos`;
+    case 'eth': 
+    case 'ethereum': 
+      return `${defaultEndpoint}/ethereum`;
+    case 'usdc': 
+    case 'usd-coin': 
+      return `${defaultEndpoint}/usd-coin`;
+    case 'usdt': 
+    case 'tether': 
+      return `${defaultEndpoint}/tether`;
+    case 'dai': 
+    case 'multi-collateral-dai': 
+      return `${defaultEndpoint}/multi-collateral-dai`;
+    case 'coin': 
+      return `${defaultEndpoint}/multi-collateral-dai`;
+    default:
+      return defaultLink;
+  } 
+}
+
+/**
+ * Reformat GoFundMe URL ONLY (protocal + domain + path).. no subdomain
+ * @param {Location | URL} location 
+ */
+function getFormattedGoFundMeUrl(location) { 
+  if(!(location instanceof Location) && !(location instanceof URL)) { 
+    console.warn('URL Invalid.');
+    return undefined;
   }
 
-  const eth = coin === 'ETH' || coin ==='ETHEREUM' || coin === 'USDC' || coin === 'USDT' || coin === 'DAI';
-  if(eth) { 
-    return amount && +amount >= 0.0001;
+  if(!location.href.includes('gofundme.com')) {
+    // console.warn('Reformat for non-gofundme page not allowed.');
+    return undefined;
   }
 
-  if(coin === 'LTC' || coin === 'LITECOIN') { 
-    return amount && +amount >= 0.002;
-  }
+  return location.protocol + "//" + getDomainWithoutSubdomain(location.origin) + "/" + location.pathname.split('/').pop();
+}
 
-  if(coin === 'XMR' || coin === 'MONERO') { 
-    return amount && +amount >= 0.002;
-  }
+/**
+ * get the main domain part of the url
+ * @param {Location | URL} url 
+ */
+function getDomainWithoutSubdomain(url) {
+  const urlParts = new URL(url).hostname.split('.')
 
-  if(coin === 'EOS') {
-    return amount && +amount >= 0.002;
-  }
-
-  if(coin === 'IGNIS') {
-    return amount && +amount >= 0.002
-  }
-
-  return false;
+  return urlParts
+    .slice(0)
+    .slice(-(urlParts.length === 4 ? 3 : 2))
+    .join('.')
 }
 
 // Can't have multiple onLoad function

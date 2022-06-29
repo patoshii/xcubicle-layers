@@ -20,21 +20,27 @@ const ContentUtils = (_ => {
 			}
 
 			.xc {
+				background: url(${bgImageLocation}) #eee8d8 no-repeat;
+				background-size: 200px;
 				position: fixed;
-				right: 5px; 
+				right: 1vw; 
 				width: 300px;
 				height: 100px;
 				font-size: 16px;
+				background-color: #eeeeee;
 				z-index: 999999; 
+				
 				display: flex;
 				flex-direction: column;
 				justify-content: center;
 				align-items: center;
+
 				top: -100px;
+				transition: top 500ms cubic-bezier(0.005, 0.465, 0.730, 0.900);
 			}
 
 			.xc.show {
-				top: 5px; 
+				top: 1vh; 
 			}
 			
 			.xc__btn { 
@@ -101,7 +107,7 @@ const ContentUtils = (_ => {
 	
 	utils.createNoteToggleButton = function() { 
 		const shadowContainer = document.createElement("div");
-    shadowContainer.id = "xc-dialog";
+    shadowContainer.id = "xc-note-dialog";
     const shadowRoot = shadowContainer.attachShadow({ mode: "open" });
     const bgImageLocation = chrome.runtime.getURL("/images/bg_xclayers.png");
     const style = `
@@ -156,6 +162,10 @@ const ContentUtils = (_ => {
 			.xc__btn:hover {
 				background-color: #da0000;
 			}
+
+			.xc__msg {
+				display: none;
+			}
 			
 		</style>
 	`;
@@ -164,6 +174,7 @@ const ContentUtils = (_ => {
 		${style}
 		<div class="xc">
 			<button class="xc__btn">Open my Notes</button>
+			<div class="xc__msg">Notes Found</div>	
 		</div>
 	`;
 
@@ -171,7 +182,13 @@ const ContentUtils = (_ => {
 
     setTimeout(() => {
       content.classList.add("show");
-    }, 500);
+		}, 500);
+		
+		chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+			if (request.pageUpdate === "note-found") {
+				shadowRoot.querySelector('.xc__msg').style.display = 'block';
+			}
+		});
 
     shadowRoot.querySelector(".xc__btn").addEventListener("click", () => {
 			 const templatePath = chrome.runtime.getURL("/html/notes.html");

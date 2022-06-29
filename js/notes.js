@@ -1,5 +1,5 @@
 'use strict'; 
-const MASTER_ARDOR_ACCOUNT = "ARDOR-XXXX-XXXX-5496-B3YAC";
+const MASTER_ARDOR_ACCOUNT = "COIN-XXXX-XXXX-5496-B3YAC";
 
 let secondaryPass = 'disable';
 let nodeType = 'Testnet';
@@ -215,8 +215,7 @@ async function printPublicNotes(node, query) {
       const data = queryResponse.data[i];
       if (transactionIsOlderThanSetTime(nodeType, CUSTOM_BLOCK_TIMESTAMP, data.blockTimestamp)) {
         if (data) {
-          const hash = data.transactionFullHash,
-            noteRequest = `${node}/nxt?requestType=getTaggedData&chain=ignis&transactionFullHash=${hash}`,
+          const noteRequest = MainBlockchain.requestUrl(node, 'getTaggedData', {chain: "ignis", ...data}),
             noteResponse = await getRequest(noteRequest),
             tags = noteResponse.tags.replace(/\s/g, '').split(',');
 
@@ -304,8 +303,7 @@ async function printPrivateNotes(node, query) {
     for (let i = 0; i < queryResponse.data.length; i++) {
       const data = queryResponse.data[i];
       if (transactionIsOlderThanSetTime(nodeType, CUSTOM_BLOCK_TIMESTAMP, data.blockTimestamp)) {
-        const hash = data.transactionFullHash,
-          noteRequest = `${node}/nxt?requestType=getTaggedData&chain=ignis&transactionFullHash=${hash}`,
+        const noteRequest = MainBlockchain.requestUrl(GLOBAL['node'], 'getTaggedData', {chain: "ignis", ...data}),
           noteResponse = await getRequest(noteRequest),
           tags = noteResponse.tags.replace(/\s/g, '').split(',');
 

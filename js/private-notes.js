@@ -96,19 +96,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 
-async function privateNotes(account) {
-  const request = GLOBAL['node'] + `/nxt?requestType=searchTaggedData&chain=ignis&tag=note,encrypted&account=${account}`;
-
+async function privateNotes(account) { 
   let notes = [];
 
   try {
+    const request = MainBlockchain.requestUrl(GLOBAL['node'],'searchTaggedData', {chain:"ignis",tag:"note,encrypted",account})
     const noteObj = await getRequest(request);
     let nodeType = await getNodeType(GLOBAL['node'])
     for (const data of noteObj.data) {
       if (transactionIsOlderThanSetTime(nodeType, CUSTOM_BLOCK_TIMESTAMP, data.blockTimestamp)) {
         if (data.tags == 'note,encrypted' || data.tags == 'note,sitewide,encrypted') {
-          const hash = data.transactionFullHash;
-          const noteRequest = GLOBAL['node'] + `/nxt?requestType=getTaggedData&chain=ignis&transactionFullHash=${hash}`;
+          const noteRequest = MainBlockchain.requestUrl(GLOBAL['node'], 'getTaggedData', {chain: "ignis", ...data});
           const noteResponse = await getRequest(noteRequest);
           const timestamp = noteResponse.transactionTimestamp;
           const noteData = noteResponse.data;

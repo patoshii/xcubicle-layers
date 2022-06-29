@@ -1,7 +1,7 @@
 (function(window) {
-  let GLOBAL_ACTIVE_NODE = 'https://testardor.xcubicle.com',
+  let GLOBAL_ACTIVE_NODE = 'https://a1.annex.network',
     GLOBAL_TESTNET_NODE = 'https://testardor.xcubicle.com',
-    GLOBAL_MAINNET_NODE = 'https://ardor.jelurida.com',
+    GLOBAL_MAINNET_NODE = 'https://a1.annex.network',
     CUSTOM_LEVEL = 'Not Set',
     CIPHER = 'disable',
     NOTE_POPUP = 'disable',
@@ -123,12 +123,12 @@
             chrome.storage.local.set({ isTestnet: NODE_TYPE === 'Testnet' });
           } catch (error) {
             console.log(error, `check ${GLOBAL_ACTIVE_NODE} node.`);
-            GLOBAL_ACTIVE_NODE = 'https://testardor.jelurida.com';
+            GLOBAL_ACTIVE_NODE = 'https://a1.annex.network';
             chrome.storage.local.set({
-              activeNode: 'https://testardor.jelurida.com'
+              activeNode: 'https://a1.annex.network'
             });
             chrome.storage.local.set({
-              testnetNode: 'https://testardor.jelurida.com'
+              testnetNode: 'https://a1.annex.network'
             });
           }
         }
@@ -334,7 +334,7 @@
 
   async function activeButtonHandler(event) {
     if (!this.parentNode.classList.contains('active')) {
-      const node = this.parentNode.querySelector('a').href;
+      const node = this.parentNode.querySelector('a').href.replace(/\/$/, "");
 
       chrome.storage.local.set({ activeNode: node });
 
@@ -343,7 +343,7 @@
       chrome.storage.local.set({ isTestnet: NODE_TYPE === 'Testnet' });
       document
         .querySelectorAll('.activeBtn')
-        .forEach(btn => btn.parentNode.classList.remove('active'));
+        .forEach(btn => btn.parentNode.classList.remove('active')); 
       this.parentNode.classList.add('active');
     }
   }
@@ -461,47 +461,52 @@
 
     let listhtml = ''; 
 
-    if(tokens.includes('ignis')) { 
-      tokens.splice(tokens.indexOf('ignis'),1, 'nxtaddr','nxtpass');
+    if(tokens.includes('coin')) { 
+      tokens.splice(tokens.indexOf('coin'),1, 'nxtaddr','nxtpass');
     }
 
     const filtered = Object.keys(localStorage).filter(coin => tokens.some(elm => coin.includes(elm)));
     const orderedKeys = filtered.sort();
+    const isXmrOrOxen = (c) => c === 'xmr' || c === 'oxen';
 
     for (let key of orderedKeys) {
       let html = '';
       if (key.includes('pub')) {
-        let coinLabel = key.split('pub')[0];
-        html = `<li class="${coinLabel} public-key">
-                  <span class="icon"></span>
-                  <span class="label"> ${getCurrencyName(key) ? getCurrencyName(key) : 'Monero'} <span class="pub-label">Public Key</span>:</span><br>
-                  <span class="value">${localStorage.getItem(key)}</span>
-                </li>`;
+        let coinLabel = key.split('pub')[0]; 
+        if(isXmrOrOxen(coinLabel)) { 
+          html = `<li class="${coinLabel}"> 
+                  <details>
+                    <summary><span class="icon"></span><strong>${getCurrencyName(key)}</strong></summary>
+                    <p class="public-key">Public Key: ${localStorage.getItem(coinLabel+'pub')}</p>
+                    <p class="public-key">Public Spend Key: ${localStorage.getItem(coinLabel+'pub-spend')}</p>
+                    <p class="public-key">Public View Key: ${localStorage.getItem(coinLabel+'pub-view')}</p>
+                    <p class="private-key">Private Spend Key: <span class="value">${localStorage.getItem(coinLabel+'pri-spend')}<span></p>
+                    <p class="private-key">Private View Key: <span class="value">${localStorage.getItem(coinLabel+'pri-view')}<span></p>
+                  </details>
+                </li>`; 
+          orderedKeys.splice(orderedKeys[coinLabel+'pub-spend'], 1);;
+          orderedKeys.splice(orderedKeys[coinLabel+'pub-view'], 1);;
+        } else {
+          html = `<li class="${coinLabel}"> 
+                  <details>
+                    <summary><span class="icon"></span><strong>${getCurrencyName(key)}</strong></summary>
+                    <p class="public-key">Public Key: ${localStorage.getItem(coinLabel+'pub')}</p>
+                    <p class="private-key">Private Key: <span class="value">${localStorage.getItem(coinLabel+'pri')}<span></p>
+                  </details>
+                </li>`; 
+        }
       }
-      if (key.includes('pri')) {
-        let coinLabel = key.split('pri')[0];
-        html = `<li class="${coinLabel} private-key">
-                  <span class="icon"></span>
-                  <span class="label">${getCurrencyName(key)} <span class="pri-label">Private Key</span>:</span><br>
-                  <span class="value">${localStorage.getItem(key)}</span>
-                </li>`;
-      }
+      // nxtaddr / nxtpass
       if (key.includes('pass')) {
         let coinLabel = key.split('pass')[0];
-        html = `<li class="${coinLabel} private-key">
-                  <span class="icon"></span>
-                  <span class="label">${getCurrencyName(key)} <span class="pri-label">Private Key</span>:</span><br>
-                  <span class="value">${localStorage.getItem(key)}</span>
+        html = `<li class="${coinLabel}">
+                  <details>
+                    <summary><span class="icon"></span><strong>${getCurrencyName(key)}</strong></summary>
+                    <p class="public-key">Public Key: ${localStorage.getItem('nxtaddr')}</p>
+                    <p class="private-key">Private Key: <span class="value">${localStorage.getItem('nxtpass')}</span></p>
+                  </details>
                 </li>`;
         }
-        if (key.includes('addr')) {
-          let coinLabel = key.split('addr')[0];
-          html = `<li class="${coinLabel} public-key">
-                    <span class="icon"></span>
-                    <span class="label">${getCurrencyName(key)} <span class="pri-label">Address</span>:</span><br>
-                    <span class="value">${localStorage.getItem(key)}</span>
-                  </li>`;
-          }
         listhtml += html;
     }
             
@@ -514,10 +519,11 @@
 
     const filteredERC20 = erc20.filter(coin => tokens.some(c => c === coin)); 
     for(let coin of filteredERC20) { 
-      listhtml += `<li class="${coin} public-key">
-                <span class="icon-img"><img src=${erc20Logos[coin]} alt=${coin.toUpperCase()}></span>
-                <span class="label">${coin.toUpperCase()} <span class="pri-label">Address</span>:</span><br>
-                <span class="value">${localStorage.getItem('ethpub')}</span>
+      listhtml += `<li class="${coin}">
+                  <details>
+                    <summary><span class="icon-img"><img src=${erc20Logos[coin]} alt=${coin.toUpperCase()}></span><strong>${coin.toUpperCase()}</strong></summary>
+                    <p class="public-key">Public Key: ${localStorage.getItem('ethpub')}</p>
+                  </details>
               </li>`; 
     }
 
@@ -540,14 +546,24 @@
         return 'Litecoin';
       case c.includes('seg'):
         return 'Segwit';
-      case c.includes('-spend'):
+      case c.includes('xmrpri-spend') || c.includes('xmrpub-spend'):
         return 'Monero-Spend';
-      case c.includes('-view'):
+      case c.includes('xmrpri-view') || c.includes('xmrpub-view'):
         return 'Monero-View';
+      case c === 'xmrpub':
+        return 'Monero';
+      case c.includes('oxenpri-spend') || c.includes('oxenpub-spend'):
+        return 'Oxen-Spend';
+      case c.includes('oxenpri-view') || c.includes('oxenpub-view'):
+        return 'Oxen-View';
+      case c === 'oxenpub':
+        return 'Oxen';
       case c.includes('eos'):
         return 'EOS';
       case c.includes('nxt'):
-        return 'ARDOR';
+        return 'COIN';
+      default:
+        return currencyCode;
     }
   }
 })(window);

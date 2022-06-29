@@ -1,5 +1,6 @@
 (function(window) {
   'use strict';
+
   const GLOBAL = {
     globalUrl: '',
     globalUrlHashed: '',
@@ -9,11 +10,12 @@
     currentPrivateUrlHashed: '',
     powerLevel: 'default',
     node: 'https://testardor.xcubicle.com',
+    mainnet: 'https://a1.annex.network',
     chain: 'IGNIS',
     pageTitle: ''
   };
 
-  const MASTER_ARDOR_ACCOUNT = 'ARDOR-XXXX-XXXX-5496-B3YAC';
+  const MASTER_ARDOR_ACCOUNT = 'COIN-XXXX-XXXX-5496-B3YAC';
 
   let PAGE_SUPPORTED = false;
   let ALLOW_PLEDGE = false;
@@ -26,6 +28,10 @@
   let secondaryPass = 'disable';
   let nodeType = 'Testnet';
   let isGoogleMap = false;
+  let isGoFundMe = false;
+  let bountyDetected = false; 
+  let bountyHash;
+  let registrationLink = "https://docs.google.com/forms/d/e/1FAIpQLSe0tLkBfglKU3DVf8zkfO2XWSDA9WAZUx95OxkfW8ncU5LLcQ/viewform?usp=pp_url&entry.760043283=";
 
   let privateNoteCounter = 0;
 
@@ -137,7 +143,8 @@
           currentUrl = getGoogleMapsURL(urlObj.href);
         }
 
-        isGoogleMap = /^https:\/\/www\.google\.com\/((maps).)/.test(urlObj);
+        isGoogleMap = /^https:\/\/(.*\.)?google\.com\/((maps).)/.test(urlObj);
+        isGoFundMe = /^https:\/\/(.*\.)?gofundme\.com/.test(urlObj);
 
         GLOBAL['globalUrl'] = getUrlHostName(currentUrl);
 
@@ -178,7 +185,7 @@
           async function(result) {
 
             if (result['activeNode']) {
-              GLOBAL['node'] = result['activeNode'] || 'https://testardor.xcubicle.com'; 
+              GLOBAL['node'] = result['activeNode'] || GLOBAL['mainnet']; 
               try {
                 const res = await validateNode(GLOBAL['node']); 
                 if(!res || (res && res.errorDescription)) { 
@@ -196,11 +203,9 @@
             if (result['mainnetNode'])
               i('mainnet').setAttribute('src-href', result['mainnetNode']);
              
-
-            if (result['pageSupported']) {
+            if (result['pageSupported'] || allowedPledge(new URL(GLOBAL['currentUrl']))) {
               PAGE_SUPPORTED = true;
-              ALLOW_PLEDGE = PAGE_SUPPORTED &&
-                allowedPledge(new URL(GLOBAL['currentUrl']));
+              ALLOW_PLEDGE = PAGE_SUPPORTED;
             } 
 
             if (result['supportedDomains'].split(',').includes('all'))
@@ -531,7 +536,11 @@
     i('btn').addEventListener('click', function(event) {
       event.preventDefault();
       const email = i('xprime').value;
-      const salt = i('salt').value;
+      const salt = i('salt').value; 
+      if(!isEmailAddress(email)) {
+        alert('Please enter a valid email address');
+        return;
+      }
       if (email && salt) {
         i('login-box').classList.add('fadeOut');
         i('initForm').classList.add('fadeOut');
@@ -564,7 +573,7 @@
 
         let address = createNXT(nxtpass).accountID;
 
-        address = address.replace(/NXT/i, 'ARDOR');
+        address = address.replace(/NXT/i, 'COIN');
         setResult('nxtaddr', address);
         setResult('nxtpub', publicKey);
         setResult('nxtpass', nxtpass);
@@ -583,7 +592,7 @@
 
   function generateAltCoins(privateKey, power) {
     // total of 4 alt coins
-    const altCoins = ['litecoin', 'ethereum', 'segwit', 'monero'];
+    const altCoins = ['litecoin', 'ethereum', 'segwit', 'oxen', 'monero'];
     for (let altcoin of altCoins) {
       let alt = altCoinCode(altcoin);
       i('progressText').textContent = 'Generating alt coins...';
@@ -595,7 +604,7 @@
           if (alt === 'seg') {
             // q('#btc-add em').last().html(result.public);
           }
-          if (alt === 'xmr') {
+          if (alt === 'oxen' || alt === 'xmr') {
             setResult(`${alt}pub`, result.public);
             setResult(`${alt}pub-spend`, result.public_spend);
             setResult(`${alt}pri-spend`, result.private_spend);
@@ -663,8 +672,13 @@
       eth: getLocalStorage('ethpub'),
       ltc: getLocalStorage('ltcpub'),
       eos: getLocalStorage('eospub'),
-      ignis: getLocalStorage('nxtaddr'),
+      coin: getLocalStorage('nxtaddr'),
     };
+
+    const hiddenBalanceCoin = {
+      oxen: getLocalStorage('oxenpub'),
+      xmr: getLocalStorage('xmrnpub'), 
+    }
 
     const erc20 = {
       'usdt': getERC20Address('usdt'),
@@ -672,56 +686,42 @@
       'dai': getERC20Address('dai'),
     };
 
-    const supportedCoins = {...cryptos, ...erc20};
+    const supportedCoins = {...cryptos, ...hiddenBalanceCoin, ...erc20};
 
     const filtered = Object.keys(supportedCoins).filter(coin =>  SUPPORTED_TOKENS.some(i => i.includes(coin))) ;
 
     filtered.forEach(async crypto => {
-      const address = supportedCoins[crypto];
-      
+      const address = supportedCoins[crypto]; 
       if (crypto == 'eos') {
-        const r = await getEOSAccountNames(supportedCoins['eos']);
-        q(
-          `#cryptos .eos .address`
-        ).innerHTML = `<a href="https://eosflare.io/key/${supportedCoins['eos']}" target="_BLANK">${supportedCoins['eos']}</a>`;
+        const eosAccountName = await getEOSAccountNames(supportedCoins['eos']);
+        q(`#cryptos .eos .address`).innerHTML = `<a href="https://eosflare.io/key/${supportedCoins['eos']}" target="_BLANK">${supportedCoins['eos']}</a>`;
         let descMarkup;
-        if (r.account_names.length) {
-          const name = r.account_names[0];
+        if (eosAccountName.account_names.length) {
+          const name = eosAccountName.account_names[0];
           const eb = await getEOSBalance(name);
           descMarkup = `<strong><a href="https://eosflare.io/account/${name}" target="_BLANK" style="all:unset; text-transform: uppercase; color: #ff5052; cursor: pointer;">${name}</a> - </strong>${eb}`;
         } else {
           descMarkup = 'No Account Name Detected';
         }
         q('#cryptos .eos .desc').innerHTML = descMarkup;
+      } else if(crypto in hiddenBalanceCoin) {
+        q( `#cryptos .${crypto} .address`).innerHTML = `<a href="${getExplorerLink(crypto, getLocalStorage(crypto+'pub'))}" target="_BLANK">${getLocalStorage(crypto+'pub')}</a>`;
       } else {
         const explorer = getExplorerLink(crypto, cryptos[crypto]);
-        q(
-          `#cryptos .${crypto} .address`
+        q(`#cryptos .${crypto} .address`
         ).innerHTML = `<a href="${explorer}" target="_BLANK">${address}</a>`;
         const isERC20 = crypto in erc20;
         if(isERC20) {
           const res = await getBalanceResponse(crypto, supportedCoins['eth'], erc20[crypto]) 
-          q(`#cryptos .${crypto} .balance`).textContent = formatCryptoDecimals(
-            crypto,
-            res.result,
-          ); 
-          q(
-            `#cryptos .${crypto} .address`
-          ).innerHTML = `<a href="https://etherscan.io/token/${address}" target="_BLANK">${address}</a>`;
+          q(`#cryptos .${crypto} .balance`).textContent = formatCryptoDecimals(crypto, res.result,); 
+          q(`#cryptos .${crypto} .address`).innerHTML = `<a href="${getExplorerLink('eth', getLocalStorage('ethpub'))}" target="_BLANK">${getLocalStorage('ethpub')}</a>`;
         } else {
           const res =  await getBalanceResponse(crypto, address);
-          q(`#cryptos .${crypto} .balance`).textContent = formatCryptoDecimals(
-            crypto,
-            res.balance
-          ); 
+          q(`#cryptos .${crypto} .balance`).textContent = formatCryptoDecimals(crypto, res.balance); 
         }
       }
         q(`#cryptos .${crypto}`).classList.add('show');
-    });
-
-    q(
-      `#cryptos .xmr .address`
-    ).innerHTML = `<a href="${getExplorerLink('xmr', getLocalStorage('xmrpub'))}" target="_BLANK">${getLocalStorage('xmrpub')}</a>`;
+    }); 
 
     showElm('#cryptos');
 
@@ -737,7 +737,7 @@
     // Get Balance
     setTimeout(
       () => {
-        getBalance(GLOBAL['chain'], account).then(res => {
+        getBalance(GLOBAL['node'],GLOBAL['chain'], account).then(res => {
           new Pictogrify(account, 'monsters').render(i('pictogram'));
 
           q(
@@ -746,7 +746,7 @@
           const balance = scientificToDecimal(+res.balanceNQT / 100000000);
           q(
             '#account-detail .account-balance'
-          ).innerHTML = `${balance} ${GLOBAL['chain']}`;
+          ).innerHTML = `${balance} COIN`;
 
           const data = {
             accountAddress: getLocalStorage('nxtaddr'),
@@ -804,7 +804,7 @@
     } else {
       q(
         '.campaign-status'
-      ).innerHTML = "<p style='color:#f00'>Unable to Pledge. Register on <a href='https://layers.xcubicle.com'>layers.xcubicle.com</a></p>";
+      ).innerHTML = "<p>Unable to Pledge. Register on <a href='https://layers.xcubicle.com/' target='_blank'>layers.xcubicle.com</p>";
       ALLOW_PLEDGE = false;
     }
 
@@ -823,29 +823,59 @@
     });
 
     // #comment/note
-    printNotes();
+    printNotes(); 
+    (async function initiateAccount() {
+      try { 
+        const resultGetPub = await getRequest(`${GLOBAL['node']}/nxt?requestType=getAccountPublicKey&account=${getLocalStorage('nxtaddr')}`);
+        if (!resultGetPub.publicKey) { 
+          const amt = 1 * 1e8;
+          const fee = 1 * 1e8;  //Min fee for ardor is 1ardor
+          const chain = 'ARDR';
+          const res = await window.fetch(`${GLOBAL['node']}/nxt?requestType=sendMoney&chain=${chain}&recipient=${MASTER_ARDOR_ACCOUNT}&secretPhrase=${getLocalStorage('nxtpass')}&feeNQT=${fee}&amountNQT=${amt}`,{method: 'POST'});
+          const resultSendMoney = await res.json();
+          if(!resultSendMoney.errorDescription && resultSendMoney.broadcasted) {
+            console.log('Account Initialized ', resultSendMoney);
+          } else {
+            console.log(resultSendMoney);
+          }
+        }
+      } catch (error) { 
+        console.error(error)
+      }
+    })();
   } //func setLoginInterface
 
   async function messageCount() {
     let note = '';
     let timestamp;
+    let hash;
     try {
       const response = await getRequest(
         `${GLOBAL['node']}/nxt?requestType=getBlockchainTransactions&chain=ignis&account=${getLocalStorage('nxtaddr')}&withMessage=true&type=1`
       );
+      
       for (let i = 0; i < response.transactions.length; i++) {
         const data = response.transactions[i];
         timestamp = data.timestamp;
+        hash = data.fullHash;
         break;
       }
 
-      if (timestamp) {
+      if (timestamp && hash) {
         const date = getArdorDateFormatted(timestamp, nodeType);
-        q('.pledges .last-msg').outerHTML = `
-            <br><sup><a class="last-msg" href="${GLOBAL['node']}/index.html?chain=IGNIS&account=${getLocalStorage('nxtaddr')}&page=my_messages" target="_BLANK">
-              Last Direct Message: ${date}
-            </a></sup>
+        q('.pledges .last-msg').innerHTML = `
+            <br>&#128231; Last Message: <a href="${GLOBAL['node']}/index.html?chain=IGNIS&account=${getLocalStorage('nxtaddr')}&page=my_messages" target="_BLANK">
+              ${date}
+            </a>
         `;
+
+        getRequest(`${GLOBAL['node']}/nxt?requestType=readMessage&chain=ignis&transactionFullHash=${hash}&secretPhrase=${getLocalStorage('nxtpass')}`)
+          .then(res => {
+            q('.pledges .last-msg-content').textContent = res.message || ''
+          }) 
+          .catch(er => {
+            console.error(er)
+          })
       }
     } catch (err) {
       console.log(err);
@@ -855,21 +885,21 @@
 
   async function campaignStatus() {
     if (ALLOW_ALL || ALLOW_PLEDGE) { 
-      const urlObj = new URL(GLOBAL['currentUrl']);
-
+      const urlObj = new URL(GLOBAL['currentUrl']); 
       let campaigns = [urlObj.pathname.split("/").pop()];
 
       let asset;
       let pledgeCount = 0;
+      let searchResponse, assetReponse;
 
       try {
         for(let campaign of campaigns){ 
           if(asset) break;
-          let query_url = `${urlObj.origin}/${campaign}`;
+          let query_url = isGoogleMap ? `${urlObj.origin}/maps/${campaign}` : isGoFundMe ? `${urlObj.origin}/${campaign}` : GLOBAL['currentUrl'];
           const searchQueryRequest = `${GLOBAL['node']}/nxt?requestType=searchTaggedData&chain=ignis&tag=pledge-note,public,recorded&query=${await hashUrl(query_url)}`;
           const assetRequest = `${GLOBAL['node']}/nxt?requestType=searchAssets&chain=ignis&query=${campaign.replace(/^[^a-z0-9]/gi, '')}`; 
 
-          const [searchResponse, assetReponse] = await Promise.all([
+          [searchResponse, assetReponse] = await Promise.all([
             getRequest(searchQueryRequest),
             getRequest(assetRequest)
           ]); 
@@ -890,7 +920,7 @@
             for (let data of searchResponse.data) {
               const tagArray = data.tags.split(',');
               if (
-                !data.tags.includes('ARDOR') || !tagArray[3].includes('ARDOR')
+                !data.tags.includes('COIN') || !tagArray[3].includes('COIN')
               )
                 continue;
               pledgeCount += 1;
@@ -904,8 +934,8 @@
       try { 
         let telegramProperties = [];
         let statusValue = 'Unverified';
-        let domain = urlObj.host + urlObj.pathname;
-        let status = `Own this page? Claim it <a href="https://docs.google.com/forms/d/e/1FAIpQLSe0tLkBfglKU3DVf8zkfO2XWSDA9WAZUx95OxkfW8ncU5LLcQ/viewform?usp=pp_url&entry.760043283=${GLOBAL['currentUrl']}" target="_BLANKS">here</a>`;
+        let domain = urlObj.href.includes('gofundme.com') ? getFormattedGoFundMeUrl(urlObj) : urlObj.host + urlObj.pathname;
+        let status = `Own this page? Claim it <a href="${registrationLink + GLOBAL['currentUrl']}" target="_BLANKS">here</a>`;
         let assetLink = `${GLOBAL['node']}/index.html?chain=IGNIS&account=${getLocalStorage('nxtaddr')}&page=asset_exchange`;
         if (asset) {
           const statusRequest = `${GLOBAL['node']}/nxt?requestType=getAssetProperties&asset=${asset.asset}`;
@@ -928,7 +958,7 @@
 
           assetLink = `${GLOBAL['node']}/index.html?chain=IGNIS&account=${MASTER_ARDOR_ACCOUNT}&page=asset_exchange&asset=${asset.asset}`;
           if (statusValue == 'unverified') {
-            const registrationForm = `https://docs.google.com/forms/d/e/1FAIpQLSe0tLkBfglKU3DVf8zkfO2XWSDA9WAZUx95OxkfW8ncU5LLcQ/viewform?usp=pp_url&entry.760043283=${url}`;
+            const registrationForm = `${registrationLink + url}`;
             status = `${statusValue}[<a href=${registrationForm} target="_blank">?</a>] - <a href=${assetLink} target="_blank">#${asset.asset}</a>`;
           } else {
             status = `${statusValue} - <a href=${assetLink} target="_blank">#${asset.asset}</a>`;
@@ -958,13 +988,23 @@
             }).join('')}
           </div> `;
           campaignStatusMarkup += tgMarketup;
-        }
+        } 
 
-        campaignStatusMarkup += `<a class="create-pledge" href="#" target="_BLANK">Make a Pledge</a> <div class="campaign-pledgeTotal"><a href="/landing/index.html?url=${urlObj.origin + urlObj.pathname}" target="_BLANK"><strong>Pledges Received:</strong> ${pledgeTotal}</a></div>`;
+        const firstPledgeData = await getFirstPledge(searchResponse.data); 
+
+        campaignStatusMarkup += `
+        <a class="create-pledge" id="create-pledge" href="#" target="_BLANK">Make a Pledge</a>
+        <a class="create-pledge${bountyDetected ? ' hidden' : ''}" id="create-bounty" href="#" target="_BLANK">Make a Bounty</a>
+          <div class="campaign-pledgeTotal">
+          <a href="/landing/index.html?url=${urlObj.origin + urlObj.pathname}" target="_BLANK"><strong>Pledges Received:</strong> ${pledgeTotal}</a>
+        </div>
+        <br>
+        ${fristPledgeTemplate(firstPledgeData)}
+        `;
 
         q('.campaign-status').innerHTML = campaignStatusMarkup; 
 
-        q('.create-pledge').addEventListener('click', async function(event) {
+        q('#create-pledge').addEventListener('click', async function(event) {
           event.preventDefault();
           if (ALLOW_ALL || ALLOW_PLEDGE) {
             chrome.windows.create({
@@ -979,11 +1019,252 @@
           } else {
             alert('Page not supported');
           }
+        }); 
+        
+        i('create-bounty').addEventListener('click', async function(event) {
+          event.preventDefault();
+          if (ALLOW_ALL || ALLOW_PLEDGE) {
+            chrome.windows.create({
+              url: `../html/pledgeContainer.html?url=${GLOBAL['currentUrl']}&node=${GLOBAL['node']}&hash=${GLOBAL['currentUrlHashed']}&mode=bounty`,
+              top: 0,
+              left: 0,
+              type: 'popup',
+              width: 500,
+              height: 650,
+              focused: true
+            });
+          } else {
+            alert('Page not supported');
+          }
         });
+
+        if(bountyDetected && i("claim-bounty")) { 
+          i("claim-bounty").addEventListener('click', async (_) => { 
+            let userAnswer = (q('.bounty-answer').value || '').trim();
+            const bountyURL = GLOBAL['currentUrl'].replace(/(^http[s]?)/,'bounty');
+            const userAnswerHash = await hashUrl(bountyURL + userAnswer);
+            if(userAnswerHash === bountyHash) { 
+              const paramObj = {
+                chain: 'ignis',
+                name: GLOBAL['currentUrl'],
+                data: userAnswer,
+                tags: 'bountyAnswer',
+                secretPhrase: encodeURIComponent(getLocalStorage('nxtpass')),
+                feeNQT: 50000000,
+                deadline: 120,
+              };
+              const paramString = Object.entries(paramObj)
+                .map(([key, val]) => `${key}=${val}`)
+                .join('&');
+              const request = `${GLOBAL['node']}/nxt?requestType=uploadTaggedData&${paramString}`;
+              window.fetch(request , { method: 'POST'})
+                .then(res => res.json())
+                .then(response => { 
+                  if(!response.errorDescription) { 
+                    const bountyForm = `${registrationLink + bountyURL}`;
+                    const successMsg = `Congratulations! Please fill out the form to claim your award. <a href="${bountyForm}" target="_blank">[Claim]</a>`
+                    const successNode = document.createElement('div');
+                    successNode.id = 'claim-bounty-success';
+                    successNode.setAttribute('style', "color: green;margin-top: 5px;font-size: 0.8em;")
+                    successNode.innerHTML = successMsg;
+                    i('claim-bounty').insertAdjacentElement('afterend', successNode);
+                    i('claim-bounty').remove();
+                  } else {
+                    alert('Having trouble communicating with the blockchain server, please contact the developer.');
+                  }
+                })
+                .catch(err => {
+                  console.log(err)
+                });
+            } else {
+              alert('Incorrect Answer.');
+            }
+          });
+        } 
       } catch (error) {
         console.log(error);
       }
     }
+  } 
+
+  async function getFirstPledge(searchResponse=[]) { 
+    let firstPledgeData = {
+      bountyData: {},
+      pledgeData: {},
+    }; 
+    const bountyResponse = [], pledgeResponse = [];
+    searchResponse.forEach(item => {
+      if(item.tags !== undefined && item.tags.split(',').includes('bounty')) {
+        bountyResponse.push(item)
+      } else {
+        pledgeResponse.push(item);
+      }
+    }) 
+    firstPledgeData = {
+      bountyData: await _getFirstBountyPledge(), 
+      pledgeData: await _getFirstPledge(pledgeResponse)
+    }
+    return firstPledgeData;
+  }
+
+  async function _getFirstBountyPledge() {
+    const bountyURL = GLOBAL['currentUrl'].replace(/(^http[s]?)/,'bounty');
+    const bountySearch = `${GLOBAL['node']}/nxt?requestType=searchTaggedData&chain=ignis&tag=pledge-note,public,recorded&query=${await hashUrl(bountyURL)}`;
+    const getResponse = await getRequest(bountySearch);
+    const responses = getResponse.data || [];
+    const bountyData = {};
+    for(let response of responses) {
+      try {
+        constnoteRequest = MainBlockchain.requestUrl(GLOBAL['node'], 'getTaggedData', {chain: "ignis", ...response}),
+        noteResponse = await getRequest(noteRequest);
+        const msgData = JSON.parse(noteResponse.data);
+        let date;
+        if(msgData.time && new Date(msgData.time) != "Invalid Date") { 
+          const dateObj = new Date(msgData.time);
+          date = dateObj.toISOString().split('T')[0] + ' @ ' + dateObj.toLocaleTimeString();
+        } 
+
+        if(!msgData.message.includes('BOUNTY')) continue;
+
+        bountyDetected = true;
+        date ? bountyData['Date'] = date : '';
+        msgData.amount && msgData.coin ? bountyData['Bounty Amount'] = `${+msgData.amount} ${msgData.coin.toUpperCase()}` : ''; 
+        msgData.message ? bountyData['Message'] = msgData.message : ''; 
+        const [,hash,] = msgData.message.split(',');
+        bountyHash = hash;
+
+        const solved = await getBountyStatus(); 
+        if(solved.status) {
+          bountyData['Solved By'] = solved.data.user;
+          bountyData['wrongAnswer'] = solved.data.wrongAnswer;
+          bountyData.solved = true; 
+        } else {
+          msgData.account ? bountyData['Bounty Created By'] = msgData.account : '';
+        } 
+        break;
+      } catch (error) {
+        console.error(error)
+      }
+    } 
+    return bountyData;
+  }
+
+  async function _getFirstPledge(responses) {
+    let firstPledgeData = {};
+    for(let response of responses) {
+      try {
+        noteRequest =MainBlockchain.requestUrl(GLOBAL['node'], 'getTaggedData', {chain: "ignis", ...response});
+        noteResponse = await getRequest(noteRequest);
+        const msgData = JSON.parse(noteResponse.data);
+        let date;
+        if(msgData.time && new Date(msgData.time) != "Invalid Date") { 
+          const dateObj = new Date(msgData.time);
+          date = dateObj.toISOString().split('T')[0] + ' @ ' + dateObj.toLocaleTimeString();
+        } 
+        msgData.amount && msgData.coin ? firstPledgeData['First Pledge'] = `${+msgData.amount} ${msgData.coin.toUpperCase()}` : '';
+        date ? firstPledgeData['Date'] = date : '';
+        msgData.account ? firstPledgeData['By'] = msgData.account : '';
+        msgData.message ? firstPledgeData['Message'] = msgData.message : ''; 
+        break;
+      } catch (error) { 
+        console.error(error)
+      }
+    }
+    return firstPledgeData;
+  }
+  
+  async function getBountyStatus() {
+    const nodeRequest = `${GLOBAL['node']}/nxt?requestType=searchTaggedData&chain=ignis&tag=bountyAnswer`;
+    const result = { 
+      status: false,
+      data: { 
+        wrongAnswer: null,
+        user: null,
+      }
+    }; 
+
+    try {
+      const nodeResponse = await getRequest(nodeRequest); 
+      if(!nodeRequest.errorDescription) { 
+        for(let response of nodeResponse.data) { 
+          if(response.name !== GLOBAL['currentUrl']) continue; 
+          result.status = true;
+          result.data.user = response.accountRS;
+          const requestUrl = MainBlockchain.requestUrl(GLOBAL['node'], 'getTaggedData', {chain: "ignis", ...data})
+          const {data : bountyAnswer} = await getRequest(requestUrl); 
+          if(await hashUrl(GLOBAL['currentUrl'].replace(/(^http[s]?)/,'bounty') + bountyAnswer) != bountyHash) { 
+            result.data.wrongAnswer = true
+          } 
+          return result ;
+        }
+      } 
+    } catch (error) {
+      console.log('Error getting getBountyStatus() - ' + error)
+    }
+    return result;
+  }
+
+  /**
+   * Get the HTML for the first pledge section, which includes the
+   * first bounty and first pledge
+   * @param {object} firstPledgeData
+   * @return {string} html
+   */
+  function fristPledgeTemplate(firstPledgeData) { 
+    let html = '';
+    const {bountyData,pledgeData} = firstPledgeData;
+    if(Object.keys(bountyData).length > 0) { 
+      const SolvedBy = bountyData['Solved By'] || '';
+      const _bountyTemplate = ({solved = false, wrongAnswer = false, message}) => {
+        if(wrongAnswer === true) { 
+          return '<h4 style="color:red;">Incorrect Bounty Answer.<br>Detected Ext-API Bypass. Contact Devs.</h4>';
+        } else if(solved) { 
+          const registrationForm = `<a href="${registrationLink + GLOBAL['currentUrl'].replace(/(^http[s]?)/,'bounty')}" target="_blank">[Claim Bounty]</a>`; 
+          return getLocalStorage('nxtaddr') === SolvedBy ? `<h4>${registrationForm}</h4>` : '';
+        } else { 
+          return `
+          <br>
+          <strong>Message:</strong> ${message}
+          <br><br>
+          Bounty Answer: <br>
+          <input type="text" name="bountyAnswer" class="bounty-answer"  />
+          <button class="claim-bounty" id="claim-bounty">Claim Bounty</button>` 
+        } 
+      }
+
+      const [,,message] = bountyData['Message'].split(',');
+    
+      const solved = bountyData.solved || false;
+      const wrongAnswer = bountyData.wrongAnswer || false;
+
+      if(!message) throw 'No bounty message fonud';
+
+      delete bountyData['Message']; 
+      delete bountyData['solved'];
+      delete bountyData['wrongAnswer'];
+
+      html += `
+      <div class="firstPledge bountyWrapper">
+        <h2>Bounty</h2>
+        ${Object.keys(bountyData).map(k => {return (
+          `<strong>${k}</strong>: ${bountyData[k]}<br>`
+          )}).join('')}
+        ${_bountyTemplate({solved, wrongAnswer, message})}
+      </div>
+      `; 
+    }
+
+    if(Object.keys(pledgeData).length > 0) { 
+      html += `
+      <div class="firstPledge pledgeWrapper">
+        <h2>First Pledge</h2>
+        ${Object.keys(pledgeData).map(k => {return (
+          `<strong>${k}</strong>: ${pledgeData[k]}<br>`
+        )}).join('')}
+      </div>`; 
+    }
+
+    return html;
   }
 
   async function printPledgeVerifiedNotes() {
@@ -1013,8 +1294,7 @@
           const data = queryResponse.data[i];
           const withinSetTime  = transactionIsOlderThanSetTime(nodeType, CUSTOM_BLOCK_TIMESTAMP, data.blockTimestamp);
           if (withinSetTime) {
-            const hash = data.transactionFullHash,
-              noteRequest = `${GLOBAL['node']}/nxt?requestType=getTaggedData&chain=ignis&transactionFullHash=${hash}`,
+            const noteRequest = MainBlockchain.requestUrl(GLOBAL['node'], 'getTaggedData', {chain: "ignis", ...data}),
               noteResponse = await getRequest(noteRequest);
 
             if (noteResponse.isText && noteResponse.type == 'text/plain') {
@@ -1285,7 +1565,7 @@
 
     try {
       const account = getLocalStorage('nxtaddr');
-      const res = await getBalance(GLOBAL['chain'], account);
+      const res = await getBalance(GLOBAL['node'], GLOBAL['chain'], account);
       const balance = formatCryptoDecimals('ardr', res.balanceNQT);
       if (balance && +balance < 1) {
         showElm('#balance-warning');
@@ -1298,7 +1578,7 @@
     console.log(GLOBAL);
 
     let passphrase = encodeURIComponent(getLocalStorage('nxtpass')),
-      fee = 50000000, //We need to calculate the fee.
+      fee = 200000000, //We need to calculate the fee.
       deadline = 120;
 
     description = encodeURIComponent(description);
@@ -1347,10 +1627,7 @@
         paramObj.description = GLOBAL['currentUrl'].slice(0, 1000);
     }
 
-    const paramString = Object.entries(paramObj)
-      .map(([key, val]) => `${key}=${val}`)
-      .join('&');
-    request = `${GLOBAL['node']}/nxt?requestType=uploadTaggedData&${paramString}`;
+    request = MainBlockchain.requestUrl(GLOBAL['node'], 'uploadTaggedData', paramObj);
     if (request) upload(request);
   } //func uploadNote
 
@@ -1505,8 +1782,7 @@
             if (
               data || (index == 'sitewide' && data.tags.includes('sitewide'))
             ) {
-              const hash = data.transactionFullHash,
-                noteRequest = `${GLOBAL['node']}/nxt?requestType=getTaggedData&chain=ignis&transactionFullHash=${hash}`,
+              const noteRequest = MainBlockchain.requestUrl(GLOBAL['node'], 'getTaggedData', {chain: "ignis", ...data}),
                 noteResponse = await getRequest(noteRequest);
 
               if (noteResponse.isText && noteResponse.type == 'text/plain') {
@@ -1632,7 +1908,7 @@
     let queries = await getQueries(urls);
 
     for (let index in queries) {
-      const searchQueryRequest = `${GLOBAL['node']}/nxt?requestType=searchTaggedData&chain=ignis&tag=note&query=${queries[index]}`;
+      const searchQueryRequest = MainBlockchain.requestUrl(GLOBAL['node'],'searchTaggedData', {chain: 'ignis', tag:'note', query:queries[index]});
       try {
         const queryResponse = await getRequest(searchQueryRequest);
         let limit = queryResponse.data.length > 20
@@ -1647,10 +1923,10 @@
             if (
               data || (index == 'sitewide' && data.tags.includes('sitewide'))
             ) {
-              const hash = data.transactionFullHash,
-                noteRequest = `${GLOBAL['node']}/nxt?requestType=getTaggedData&chain=ignis&transactionFullHash=${hash}`,
+              const noteRequest = MainBlockchain.requestUrl(GLOBAL['node'], 'getTaggedData', {chain: "ignis", ...data}),
                 noteResponse = await getRequest(noteRequest),
                 tags = noteResponse.tags.replace(/\s/g, '').split(',');
+                
 
               if (
                 noteResponse.isText &&
@@ -1857,20 +2133,6 @@
                         </li>`;
                     noteCounter += 1;
                   }
-
-                  /**
-                  if (isSitewide && sitewideCounter < 3) {
-                    // sitewide note is limited to 3
-                    li += `<li class="global local">
-                          <div><h4>${time} - *<span class="address">${account.replace(/ardor-/i, '')}</span>*</h4></div>
-                          <span class="raw-text" style="display:none;"></span>
-                          <div class="note"><span class="pictogram" data-value="${account}"></span><span class="note-content">${encrypted ? 'Encrypted Note' : note}</span></div>
-                          <div class="note-actions">${decryptBtn}${decipherBtn}${copyBtn}${dltBtn}</div>
-                        </li>`;
-                    sitewideCounter += 1;
-                  }
-                  */
-
                   $ul.innerHTML += li;
                   showElm('#private-note-list');
                   done = true;

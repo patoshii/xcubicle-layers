@@ -95,6 +95,10 @@ body {
   font-size: 16px;
 }
 
+#addresses summary {
+  outline: 0;
+}
+
 #addresses ul {
   padding: 0;
 }
@@ -104,6 +108,18 @@ body {
   padding    : 10px 0;
   word-break : break-word;
   line-height: 25px;
+}
+
+#addresses summary {
+  outline: none;
+  cursor: pointer;
+}
+
+#addresses summary strong {
+  position: relative;
+  top: -25px;
+  left: 20px;
+  font-size: 20px;
 }
 
 .private-key .value {
@@ -125,8 +141,7 @@ span.pub-label {
 }
 
 /* REMOVE LATER */
-.seg,
-.xmr.public-key~li {
+.seg {
   display: none;
 }
 
@@ -142,6 +157,7 @@ span.pub-label {
   overflow   : hidden;
   text-indent: -9999px;
   text-align : left;
+  margin-left: 10px;
 }
 
 .nxt .icon {
@@ -180,10 +196,16 @@ span.pub-label {
   height             : 64px;
 }
 
+.oxen .icon {
+  background-image: url(../images/oxen-icon.png);
+  width           : 64px;
+  height          : 64px;
+}
+
 .icon-img img {
-  width : 64px;
-  height: 64px;
-  margin: 0 10px 9px 0;
+  width      : 64px;
+  height     : 64px;
+  margin-left: 10px;
 }
 
 

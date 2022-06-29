@@ -16,8 +16,8 @@
       <a id="pledge" class="active" href="#">Pledges</a>
     </div>
     <div id="node-type">
-      <a id="testnet" class="active" href="#" src-href="https://testardor.xcubicle.com">Testnet</a> /
-      <a id="mainnet" href="#" src-href="https://ardor.jelurida.com">Mainnet</a>
+      <a id="testnet" href="#" src-href="https://testardor.xcubicle.com" style="display:none;">Testnet</a>
+      <a id="mainnet" class="active" href="#" src-href="https://a1.annex.network">Mainnet</a>
     </div>
   </div>
 
@@ -89,6 +89,11 @@
     <input id="segpri" class="altcoins" type="text">
     <input id="eospub" class="altcoins" type="text">
     <input id="eospri" class="altcoins" type="text">
+    <input id="oxenpub" class="altcoins" type="text">
+    <input id="oxenpub-spend" class="altcoins" type="text">
+    <input id="oxenpri-spend" class="altcoins" type="text">
+    <input id="oxenpub-view" class="altcoins" type="text">
+    <input id="oxenpri-view" class="altcoins" type="text">
     <input id="xmrpub" class="altcoins" type="text">
     <input id="xmrpub-spend" class="altcoins" type="text">
     <input id="xmrpri-spend" class="altcoins" type="text">
@@ -131,6 +136,11 @@
             </div>
             <div class="address"></div>
           </div>
+          <div class="crypto-detail Oxen oxen">
+            <span class="icon-img"><img src="../images/oxen-icon.png" alt="OXEN"></span>
+            <div class="title"><strong class="label">Oxen - </strong><span class="balance">Unknown Amount</span></div>
+            <div class="address"></div>
+          </div>
           <div class="crypto-detail Monero xmr">
             <span class="icon"></span>
             <div class="title"><strong class="label">Monero - </strong><span class="balance">Unknown Amount</span></div>
@@ -151,20 +161,21 @@
             <div class="title"><strong class="label">DAI - </strong><span class="balance">0</span> DAI</div>
             <div class="address"></div>
           </div>
-          <div class="crypto-detail IGNIS ignis">
-            <span class="icon-img"><img src="../images/ignis-icon.png" alt="IGNIS"></span>
-            <div class="title"><strong class="label">IGNIS - </strong><span class="balance">0</span> IGNIS</div>
+          <div class="crypto-detail COIN coin">
+            <span class="icon-img"><img src="../images/ignis-icon.png" alt="COIN"></span>
+            <div class="title"><strong class="label">COIN - </strong><span class="balance">0</span> COIN</div>
             <div class="address"></div>
           </div>
         </div>
       </details>
     </div>
 
-    <div class="campaign-status"><strong>Status:</strong> Pledging for this URL is not Supported</div>
+    <div class="campaign-status"><strong>Status:</strong> Pledging is not supported here.</div>
 
     <div class="pledges">
       <a class="pledges-history" href="/html/pledges.html" target="_BLANK">My Pledges</a>
-      <em><a class="last-msg" href="/" target="_BLANK"></a></em>
+      <em class="last-msg"></em>
+      <span class="last-msg-content"></span>
     </div>
     <div class="notes" id="verified-note-list">
       <h2>Recent Pledges</small></h2>
@@ -206,11 +217,11 @@
       <button id="toggle-global-note">Hide Sitewide</button>
       <ul class="list-content"></ul>
     </div><!-- #public-note-list -->
-    <div id="no-notes">No Notes found on this domain.</div>
+    <div id="no-notes">No Notes found on this URL domain.</div>
   </div>
 
   <div id="version">
-    <a href="https://layers.xcubicle.com" target="_blank">Xcubicle Layers <br /> Alpha Ver 1.0</a>
+    <a href="https://xcubicle.com" target="_blank">Xcubicle Layers <br /> Alpha Ver 1.0</a>
   </div>
 
   <script src="../js/lib/eos/scatterjs-core.min.js"></script>
@@ -223,6 +234,7 @@
   <script src="../js/lib/pictogrify/pictogrify.js"></script>
   <script src="../js/lib/moment.min.js"></script>
   <script src="../js/lib/moment-timezone-with-data.min.js"></script>
+  <script src="../js/mainBlockchain.js"></script>
   <script src="../js/functions.js"></script>
   <script src="../js/popup.js?1"></script>
 

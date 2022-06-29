@@ -57,52 +57,52 @@
         <form>
           <div class="control-group">
             <label class="control control-checkbox">
-              gofundme
+              Gofundme
               <input type="checkbox" value="gofundme" />
               <div class="control-indicator"></div>
             </label>
             <label class="control control-checkbox">
-              fiverr
+              Fiverr
               <input type="checkbox" value="fiverr" />
               <div class="control-indicator"></div>
             </label>
             <label class="control control-checkbox">
-              patreon
+              Patreon
               <input type="checkbox" value="patreon" />
               <div class="control-indicator"></div>
             </label>
             <label class="control control-checkbox">
-              linkedin
+              Linkedin
               <input type="checkbox" value="linkedin" />
               <div class="control-indicator"></div>
             </label>
             <label class="control control-checkbox">
-              github
+              Github
               <input type="checkbox" value="github" />
               <div class="control-indicator"></div>
             </label>
             <label class="control control-checkbox">
-              kickstarter
+              Kickstarter
               <input type="checkbox" value="kickstarter" />
               <div class="control-indicator"></div>
             </label>
             <label class="control control-checkbox">
-              facebook
+              Facebook
               <input type="checkbox" value="facebook" />
               <div class="control-indicator"></div>
             </label>
             <label class="control control-checkbox">
-              twitter
+              Twitter
               <input type="checkbox" value="twitter" />
               <div class="control-indicator"></div>
             </label>
             <label class="control control-checkbox">
-              stackoverflow / stackexchange
+              Stackoverflow / Stackexchange
               <input type="checkbox" value="stackoverflow|stackexchange" />
               <div class="control-indicator"></div>
             </label>
             <label class="control control-checkbox">
-              ebay
+              Ebay
               <input type="checkbox" value="ebay" />
               <div class="control-indicator"></div>
             </label>
@@ -112,13 +112,28 @@
               <div class="control-indicator"></div>
             </label>
             <label class="control control-checkbox">
-              Telegram
+              Telegram Profile Pages - t.me
               <input type="checkbox" value="t" />
               <div class="control-indicator"></div>
             </label>
             <label class="control control-checkbox hidden">
               Google
               <input type="checkbox" value="google" />
+              <div class="control-indicator"></div>
+            </label>
+            <label class="control control-checkbox">
+              Blockchain
+              <input type="checkbox" value="blockchain" />
+              <div class="control-indicator"></div>
+            </label>
+            <label class="control control-checkbox">
+              Xmrchain
+              <input type="checkbox" value="xmrchain" />
+              <div class="control-indicator"></div>
+            </label>
+            <label class="control control-checkbox">
+              Ardor Tools
+              <input type="checkbox" value="ardor" />
               <div class="control-indicator"></div>
             </label>
             <label class="control control-checkbox all">
@@ -130,7 +145,7 @@
           </div>
         </form>
       </div>
-      <div class="section konami" id="supported-tokens">
+      <div class="section" id="supported-tokens">
         <h3>Supported Tokens/Coins</h3>
         <form>
           <div class="control-group">
@@ -142,6 +157,11 @@
             <label class="control control-checkbox">
               Litecoin
               <input type="checkbox" value="ltc" />
+              <div class="control-indicator"></div>
+            </label>
+            <label class="control control-checkbox">
+              Oxen
+              <input type="checkbox" value="oxen" />
               <div class="control-indicator"></div>
             </label>
             <label class="control control-checkbox">
@@ -175,8 +195,8 @@
               <div class="control-indicator"></div>
             </label>
             <label class="control control-checkbox">
-              IGNIS
-              <input type="checkbox" value="ignis" />
+              COIN
+              <input type="checkbox" value="coin" />
               <div class="control-indicator"></div>
             </label>
             <input type="submit" value="Save">
@@ -221,89 +241,43 @@
     <div id="node-config">
       <div class="section" id="option-status">
         <h2>Status</h2>
-        <p id="testnet"> Ardor Testnet Node: <a
+        <p id="testnet" style="display: none;"> Ardor Testnet Node: <a
             href="https://testardor.xcubicle.com">https://testardor.xcubicle.com</a><span
             class="activeBtn">Active</span>
         </p>
-        <p id="mainnet"> Ardor Mainnet Node: <a href="https://ardor.jelurida.com">https://ardor.jelurida.com</a>
+        <p id="mainnet"> Mainnet Node: <a href="https://a1.annex.network">https://a1.annex.network</a>
           <span class="activeBtn">Active</span></p>
       </div>
-      <div class="section node">
+      <div class="section node" style="display: none;">
         <div id="testnet-node">
           <h2>Enter your own `Ardor Testnet` node</h2>
           <form id="testnet-node-form">
             <input type="text" name="node" id="testnet-node-input"
               placeholder="Example: https://testardor.xcubicle.com">
             <input type="submit" value="Save">
-            <div><small>Node List: <a href="https://ardor.peerexplorer.com/api_openapi_ssl"
-                  target="_BLANK">https://ardor.peerexplorer.com/api_openapi_ssl</a></small></div>
           </form>
         </div>
       </div>
       <div class="section node">
         <div id="mainnet-node">
-          <h2>Enter your own `Ardor Mainnet` node</h2>
+          <h2>Enter your own `Mainnet` node</h2>
           <form id="mainnet-node-form">
-            <input type="text" name="node" id="mainnet-node-input" placeholder="Example: https://ardor.jelurida.com">
+            <input type="text" name="node" id="mainnet-node-input" placeholder="Example: https://a1.annex.network">
             <input type="submit" value="Save">
-            <div><small>Node List: <a href="https://ardor.peerexplorer.com/api_openapi_ssl"
-                  target="_BLANK">https://ardor.peerexplorer.com/api_openapi_ssl</a></small></div>
           </form>
         </div>
       </div>
     </div>
     <div class="section" id="address-keys">
-      <h2>Addresses</h2>
+      <h2>Address Keys</h2>
       <div id="addresses">Login to see your Private Keys.</div>
     </div>
     <div class="section" id="about">
       <h2>About Xcubicle Layers</h2>
-      <div id="addresses">
-Layers is an app that lets users send Bitcoin to any website specifically, crowdfunding donation sites like Gofundme and Q&A sites like StackOverflow. Our blockchain-based app adds new payment options, such as Bitcoin, which were not previously available. With this, we are able to cut out middlemen and provide new features not native to the site. Essentially, we have built a new layer on top of the Internet.
-
-<h3>Pledge Layer</h3>
-We've built a method of "pledging" Bitcoin and cryptocurrency on any website directed to a user or owner of the domain regardless if they accept it or not. This new payment layer sits on top of any webpage you visit.
-
-<h3>Notes Layer</h3>
-Give users the ability to attach a sticky note to any website. These notes can be used privately for jotting down information when revisiting the same link. Or make them public for anyone to see like a comments section. All notes are stored on a decentralized data cloud encrypted and censorship resistant.
-
-<br/>
-<br/>
-<br/>
-<hr/>
-<br/>
-<br/>
-<br/>
-<pre>
-Copyright (c) 2020, Xcubicle 
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
-* Redistributions of source code must retain the above copyright notice, this
-  list of conditions and the following disclaimer.
-
-* Redistributions in binary form must reproduce the above copyright notice, this
-  list of conditions and the following disclaimer in the documentation and/or
-  other materials provided with the distribution.
-
-* Neither the name of the {organization} nor the names of its
-  contributors may be used to endorse or promote products derived from
-  this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-</pre>
+      <div>
+        Source Code and Info: <a href="https://github.com/patoshii/xcubicle-layers" target="_blank">https://github.com/patoshii/xcubicle-layers</a>
       </div>
+    </div>
   </div>
   <script src="../js/lib/moment.min.js"></script>
   <script src="../js/lib/moment-timezone-with-data.min.js"></script>

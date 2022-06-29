@@ -158,6 +158,10 @@ a:hover {
   font-size : 12px;
 }
 
+#cryptos .crypto-detail .address {
+  margin-left: 45px;
+ }
+
 #cryptos .crypto-detail.show {
   display: block;
 }
@@ -249,6 +253,16 @@ a:hover {
   text-shadow     : 0px 1px 0px #854629;
 }
 
+#create-bounty {
+  background: darkslateblue;
+  border    : 1px solid darkslateblue;
+  box-shadow: inset 0px 1px 0px 0px #8d81da;
+}
+
+#create-bounty.hidden {
+  display: none;
+}
+
 .create-pledge:hover {
   background      : linear-gradient(to bottom, #bc3315 5%, #d0451b 100%);
   background-color: #bc3315;
@@ -259,9 +273,30 @@ a:hover {
   top     : 1px;
 }
 
+.firstPledge {
+  padding: 8px 3px;
+}
+
+.firstPledge:nth-child(2n) {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.firstPledge h2 {
+  margin: 0;
+}
 
 .pledges {
-  display: none;
+  display  : none;
+  font-size: smaller
+}
+
+.last-msg-content {
+  display   : none;
+  margin-top: 15px;
+}
+
+.last-msg:hover+.last-msg-content {
+  display: block;
 }
 
 #pictogram {
