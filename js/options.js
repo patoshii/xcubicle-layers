@@ -542,6 +542,8 @@
         return 'Bitcoin';
       case c.includes('eth'):
         return 'Ethereum';
+      case c.includes('sol'):
+        return 'Solana';
       case c.includes('ltc'):
         return 'Litecoin';
       case c.includes('seg'):

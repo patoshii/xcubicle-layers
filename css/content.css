@@ -162,7 +162,7 @@
 
 #bounty-with-bitcoin {
   height        : 20px;
-  background    : #FF9900;
+  background    : linear-gradient(45deg, #4e3a93, #9944eb);
   padding       : 5px 10px;
   color         : #fff;
   font-family   : inherit;
@@ -194,7 +194,7 @@
 }
 
 #donate-btc-btn {
-  background           : url(chrome-extension://__MSG_@@extension_id__/images/donate-btn-icon.png) no-repeat #ff4f51 32px 7px;
+  background           : url(chrome-extension://__MSG_@@extension_id__/images/donate-btn-icon.png) no-repeat  #4e3a93 32px 7px;
   background-position-y: center;
   text-decoration      : none;
 }

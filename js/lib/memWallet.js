@@ -14871,6 +14871,18 @@ function keyToEthereum(key) {
   };
 }
 
+function keyToSolana(key) {
+  solanaKeys = solanaWeb3.Keypair.fromSeed(key); //requires solana web3.js
+
+  var pubkey = solanaKeys['_keypair'].publicKey;
+  var prvkey = solanaKeys['_keypair'].secretKey;
+  return {
+    private: bs58.encode(prvkey),
+    public: bs58.encode(pubkey)
+  };
+}
+
+
 function keyToMonero(seed) {
   var private_spend = reduce32(seed);
   var private_view = reduce32(keccak256(private_spend));
@@ -14977,6 +14989,10 @@ var currencies = {
   ethereum: {
     fn: keyToEthereum,
     hashSuffix: 4
+  },
+  solana: {
+    fn: keyToSolana,
+    hashSuffix: 6
   },
   segwit: {
     fn: keyToSegwit,

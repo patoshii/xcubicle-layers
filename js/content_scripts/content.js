@@ -12,7 +12,7 @@
   var TIMEZONE = "America/New_York";
 
   var $appendToButton; //querySelect
-  var cryptoBtnLabel = "Pledge Bitcoin"; //HTML;
+  var cryptoBtnLabel = "Pledge Solana"; //HTML;
 
   var reload = false;
 
@@ -25,6 +25,7 @@
     xmr: chrome.extension.getURL("../images/xmr-icon.png"),
     eos: chrome.extension.getURL("../images/eos-icon.png"),
     eth: chrome.extension.getURL("../images/eth-icon.png"),
+    sol: chrome.extension.getURL("../images/sol-icon.png"),
     usdc: chrome.extension.getURL("../images/usdc-icon.png"),
     usdt: chrome.extension.getURL("../images/usdt-icon.png"),
     dai: chrome.extension.getURL("../images/dai-icon.png"),
@@ -131,7 +132,7 @@
       $appendToButton = document.querySelector(".sc-fzoLsD.etpOIT");
       found = true;
     } else if (/^https:\/\/(www\.)?linkedin.com/.test(location.href)) {
-      linkedInButton(document.querySelector(".pv-s-profile-actions__overflow"));
+      linkedInButton(document.querySelector(".pvs-profile-actions"));
     } else if (/^https:\/\/github.com/.test(location.href)) {
       $appendToButton = document.querySelector('[aria-label="Select assignees"]');
       found = true;
@@ -139,8 +140,8 @@
       // kickStarters
       $appendToButton = document.querySelector(".NS_projects__rewards_list ol");
       found = true;
-    } else if (/^https:\/\/(www\.)?stackoverflow.com/.test(location.href)) {
-      // stackoverflow
+    } else if (/^https:\/\/(.*\.)?(stackoverflow.com|stackexchange.com)/.test(location.href)) {
+      // stackoverflow stackexchange
       bountyButton(document.querySelector(".question .comments-link"));
     } else if (document.querySelector(".ProfileSidebar .PhotoRail")) {
       $appendToButton = document.querySelector( ".ProfileSidebar .PhotoRail");
@@ -228,16 +229,24 @@
     bitcoinBountyButton.id = "bounty-with-bitcoin";
     bitcoinBountyButton.setAttribute("css", "height: 20px;");
     bitcoinBountyButton.innerHTML = `
-        <img src="https://i.imgur.com/xB1Zs68.png" style="width: 15px; height: auto; vertical-align: text-bottom; margin-right: 5px;">
-        Start a Bitcoin bounty reward
+        <img src="https://seeklogo.com/images/S/solana-sol-logo-12828AD23D-seeklogo.com.png" style="width: 15px; height: auto; vertical-align: text-bottom; margin-right: 5px;">
+        Start a Solana bounty reward
     `;
 
     selector.after(bitcoinBountyButton);
 
     document
       .getElementById("bounty-with-bitcoin")
-      .addEventListener("click", event => {
-        alert("Experimental POC - Work in Progress");
+      .addEventListener("click", async => {
+        //alert("Experimental POC - Work in Progress");
+        const node = GLOBAL["node"];
+        const currentURL = location.origin + location.pathname;
+        const urlHashed = hashUrl(currentURL);
+        const templatePath = chrome.runtime.getURL("/html/pledgeContainer.html");
+        chrome.runtime.sendMessage({
+          action: "createWindow",
+          url: `${templatePath}?url=${currentURL}&node=${node}&hash=${urlHashed}`,
+        });
       });
   }
 
@@ -690,6 +699,7 @@
           xmr: 0,
           eos: 0,
           eth: 0,
+          sol: 0,
           usdc: 0,
           usdt: 0,
           dai: 0
@@ -718,13 +728,14 @@
             acctInfo = `<div class="alias"><span class="alias-name">@${alias}</span></div>`;
           }
           const coinLabel = coin;
+              //PAT-CHANGED <div class="pledge-amount"><strong>${formatted} ${coinLabel.toUpperCase()}</strong><div class="date" style="opacity: 0.5;font-size: 13px;">${time}</div></div>
           return `
             <img src="${
               icons[coinLabel.toLowerCase()]
             }" style="vertical-align:top;width:50px; float: left;" alt="${coinLabel} icon"/>
             <div style="padding-left: 60px;">
               <div class="account-container">${acctInfo}</div>
-              <div class="pledge-amount"><strong>${formatted} ${coinLabel.toUpperCase()}</strong><div class="date" style="opacity: 0.5;font-size: 13px;">${time}</div></div>
+              <div class="pledge-amount"><strong>${formatted} SOL</strong><div class="date" style="opacity: 0.5;font-size: 13px;">${time}</div></div>
             </div>
             ${message &&
               `<div class='note' style="opacity: 0.7;clear:left; margin: 10px 0 0; border-bottom: 1px solid #ccc; padding: 0 0 10px;"><em>${message}</em></div>`}
@@ -843,7 +854,7 @@
           MASTER_ACCOUNT
         });
 
-        let currencies = { btc: 0, ltc: 0, xmr: 0, eth: 0, eos: 0 };
+        let currencies = { btc: 0, ltc: 0, xmr: 0, eth: 0, sol: 0, eos: 0 };
         if (response.properties.length) {
           for (let p of response.properties) {
             if (p.property === "status") {
@@ -853,6 +864,7 @@
               p.property === "btc" ||
               p.property === "xmr" ||
               p.property === "eth" ||
+              p.property === "sol" ||
               p.property === "eos" ||
               p.property === "coin"
             ) {
@@ -946,11 +958,11 @@
         q("#cdonate .balance").innerHTML = balanceOutput;
         q("#cdonate .coin-qr").src = url; 
         q("#cdonate .coin-address").innerHTML = 
-          `<a href="${explorerLink}" target="_blank">${coinAddress}</a>
+          `<!--a href="${explorerLink}" target="_blank">${coinAddress}</a-->
           <img src="${icons[this.value]}" alt="coin-icon" style="width:30px;margin:5px auto 0 auto;"/>
           `;
         q("#cdonate .pledge-btn").value = "Pledge " + coinLabel;
-        q("#cdonate .pledge-amount").setAttribute('placeholder', `0.00 ${this.value.toUpperCase()}`)
+        q("#cdonate .pledge-amount").setAttribute('placeholder', `0.00`)
 
         // USD conversion
         q("#total-price .label").textContent = this.value.toUpperCase();
@@ -1063,7 +1075,8 @@
       // Toggle confirmation box
       i(event.target.getAttribute("for")).checked = true;
 
-      q("#cdonate__confirm .balance").textContent = `${amount} ${coinLabel}`;
+      q("#cdonate__confirm .balance").textContent = `${amount}`;
+      //q("#cdonate__confirm .balance").textContent = `${amount} ${coinLabel}`;
       q("#cdonate__confirm .usd-value").textContent = usdValue;
       q("#cdonate__confirm .campaign-url").textContent =
       CURRENT_URL.length > 100
@@ -1242,7 +1255,7 @@
           displayProcessingMsg();
           console.log(`${message["amount"]} ${message["coinChosen"]} pledged.`);
         } else if (response.errorDescription === "Insufficient balance") {
-          alert("Please wait 2 minutes between each pledge");
+          alert("Please wait 45 seconds between each pledge");
         }
       })
       .catch(error => {
@@ -1410,6 +1423,11 @@
           icon:
             "https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png?_=05911ce"
         },
+        Solana: {
+          url: "https://solscan.io/account/",
+          icon:
+            "https://s2.coinmarketcap.com/static/img/coins/64x64/5426.png"
+        },
         Monero: {
           url: "https://duckduckgo.com/?ia=answer&q=qr+code+",
           icon:
@@ -1573,7 +1591,7 @@
   async function googleMapImplementation() {
     try {
       // set location url and location hash to localstorage;
-      const mapURL = getGoogleMapsURL(location.href);
+      const mapURL = getGoogleMapsURL(location.href).replace(/(^http[s]?)/,'bounty')
 
       // if (!getLocalStorage('xcmapurl') || getLocalStorage('xcmapurl') != mapLocationURL) {
       if (q(".xc-note-container"))
@@ -1592,6 +1610,7 @@
         query,
         MASTER_ACCOUNT
       });
+
       if (response.data.length > 0) {
         const noteContainer = document.createElement("div");
         noteContainer.className = "xc-note-container";

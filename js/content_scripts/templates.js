@@ -5,6 +5,7 @@ const xmr = chrome.extension.getURL("../images/xmr-icon.png");
 const oxen = chrome.extension.getURL("../images/oxen-icon.png");
 const eos = chrome.extension.getURL("../images/eos-icon.png");
 const eth = chrome.extension.getURL("../images/eth-icon.png");
+const sol = chrome.extension.getURL("../images/sol-icon.png");
 const usdc = chrome.extension.getURL("../images/usdc-icon.png");
 const usdt = chrome.extension.getURL("../images/usdt-icon.png");
 const dai = chrome.extension.getURL("../images/dai-icon.png");
@@ -17,6 +18,7 @@ const currencies = [
 	{ code: "oxen", name: "Oxen", src: oxen },
 	{ code: "eos", name: "EOS", src: eos },
 	{ code: "eth", name: "Ethereum", src: eth },
+	{ code: "sol", name: "Solana", src: sol },
 	{ code: "usdc", name: "USDC", src: usdc },
 	{ code: "usdt", name: "USDT", src: usdt },
 	{ code: "dai", name: "DAI", src: dai },
@@ -61,12 +63,12 @@ const modalTemplate = ({ url, explorerLink, btcAddress, balanceOutput }) => {
 				<select class="coin-options" name="coin"></select>
 				<h3>Deposit To Your Address<br>
 				<span class="coin-address">
-					<a href="${explorerLink}" target="_blank" style="font-size:13px">${btcAddress}</a>
-					<img src="${btc}" alt="coin-icon" style="width:30px;margin:5px auto 0 auto;"/>
+					<!--a href="${explorerLink}" target="_blank" style="font-size:13px">${btcAddress}</a-->
+					<img src="${sol}" alt="coin-icon" style="width:30px;margin:5px auto 0 auto;"/>
 				</span> 
 				</h3>
 				<img class="coin-qr" src=${url}>
-				<h4 class="balance" style="margin:0;color:#f00;font-size: 16px;clear:both;">Your Balance: ${balanceOutput}</h4>
+				<h4 class="balance" style="margin:0;color:#f00;font-size: 16px;clear:both;">Your Balance: 13.37 SOL</h4>
 				<details>
 					<summary style="outline: none; cursor: pointer; margin-bottom:5px;">How does this work?</summary>
 					<ul style="list-style:none; margin: 0; padding-left:15px; text-align: left;">
@@ -82,7 +84,7 @@ const modalTemplate = ({ url, explorerLink, btcAddress, balanceOutput }) => {
 					</div>
 				</details>
 				<div class="amount-container" style="display:block;box-sizing: border-box;position:relative;">
-					<input style="box-sizing:border-box;border:1px solid #000;width:100%;height:40px;" placeholder="0.00 BTC" type="number" class="pledge-amount">
+					<input style="box-sizing:border-box;border:1px solid #000;width:100%;height:40px;" placeholder="0.00" type="number" class="pledge-amount">
 					<div id="pledge-usd-value" class="fadeToggle" style="position:absolute;right:0;padding:0 9px 0 9px;border-left:1px solid #999;top:2px;background-color:#fff;"><strong>USD Value:</strong> <em>$0</em></div>
 				</div>
 				<div class="recurrence-container fadeToggle" style="margin-top:20px;">

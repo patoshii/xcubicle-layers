@@ -192,7 +192,7 @@
                   throw 'Node is throwing an error.';
                 } 
               } catch (error) { 
-                  alert('We are having trouble accessing your Ardor Node. Please double check ' + GLOBAL['node']);
+                  alert('We are having trouble accessing your node. ' + GLOBAL['node']);
                   window.close();
               }
             }
@@ -592,7 +592,7 @@
 
   function generateAltCoins(privateKey, power) {
     // total of 4 alt coins
-    const altCoins = ['litecoin', 'ethereum', 'segwit', 'oxen', 'monero'];
+    const altCoins = ['litecoin', 'ethereum', 'solana', 'segwit', 'oxen', 'monero'];
     for (let altcoin of altCoins) {
       let alt = altCoinCode(altcoin);
       i('progressText').textContent = 'Generating alt coins...';
@@ -670,6 +670,7 @@
     const cryptos = {
       btc: getLocalStorage('btcpub'),
       eth: getLocalStorage('ethpub'),
+      sol: getLocalStorage('solpub'),
       ltc: getLocalStorage('ltcpub'),
       eos: getLocalStorage('eospub'),
       coin: getLocalStorage('nxtaddr'),
@@ -1050,7 +1051,7 @@
                 data: userAnswer,
                 tags: 'bountyAnswer',
                 secretPhrase: encodeURIComponent(getLocalStorage('nxtpass')),
-                feeNQT: 50000000,
+                feeNQT: 100000000,
                 deadline: 120,
               };
               const paramString = Object.entries(paramObj)
@@ -1070,7 +1071,8 @@
                     i('claim-bounty').insertAdjacentElement('afterend', successNode);
                     i('claim-bounty').remove();
                   } else {
-                    alert('Having trouble communicating with the blockchain server, please contact the developer.');
+                    console.error(response)
+                    alert(`Error: ${response['errorDescription']} - ${GLOBAL['node']} `);
                   }
                 })
                 .catch(err => {
@@ -1115,7 +1117,7 @@
     const bountyData = {};
     for(let response of responses) {
       try {
-        constnoteRequest = MainBlockchain.requestUrl(GLOBAL['node'], 'getTaggedData', {chain: "ignis", ...response}),
+        const noteRequest = MainBlockchain.requestUrl(GLOBAL['node'], 'getTaggedData', {chain: "ignis", ...response}),
         noteResponse = await getRequest(noteRequest);
         const msgData = JSON.parse(noteResponse.data);
         let date;

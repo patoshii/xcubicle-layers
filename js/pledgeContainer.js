@@ -24,6 +24,7 @@
       xmr: "../images/xmr-icon.png",
       eos: "../images/eos-icon.png",
       eth: "../images/eth-icon.png",
+      sol: "../images/sol-icon.png",
       usdc: "../images/usdc-icon.png",
       usdt: "../images/usdt-icon.png",
       dai: "../images/dai-icon.png",
@@ -56,17 +57,17 @@
     submitPledgeListener();
   
     // INIT
-    const balanceRes = await getBalanceResponse('btcpub', coins.btcpub)
+    const balanceRes = await getBalanceResponse('solpub', coins.solpub)
     const balance = (balanceRes && balanceRes.balance) ? balanceRes.balance : 0;
-    balanceOutput = formatBalanceMessage('btcpuc', balance);
+    balanceOutput = formatBalanceMessage('solpub', balance);
   
-    const imgBlob = await getImgBlob(coins.btcpub);
+    const imgBlob = await getImgBlob(coins.solpub);
     const url = URL.createObjectURL(imgBlob);
     q('#cdonate .balance').textContent = balanceOutput;
     q('#cdonate .coin-qr').src = url;
     q('#cdonate .coin-address').innerHTML = `
-      <a href="${getExplorerLink("btc", coins.btcpub)}" target="_blank">${coins.btcpub}</a>
-      <img src="${icons['btc']}" alt="coin-icon" style="width:30px;margin:5px auto 0 auto;"/>
+      <a href="${getExplorerLink("sol", coins.solpub)}" target="_blank">${coins.solpub}</a>
+      <img src="${icons['sol']}" alt="coin-icon" style="width:30px;margin:5px auto 0 auto;"/>
       `;
   
     // USD conversion
@@ -229,7 +230,7 @@
       // min-amount needs to be increased when the bitcoin price goes up
       const formattedCoinChosen = Constant.getCrypto(coinChosen);
       if (formattedCoinChosen && minimumAmountRequired(coinChosen, amount) === false) {
-        alert(`Not Enough Funds to Pay for Network Fees - Minimum Balance Requirements: ${Constant.minimumAmountEnum[formattedCoinChosen]}`);
+        alert(`Not Enough Funds to Pay for ${formattedCoinChosen} Network Fees - Minimum Balance Requirements: ${Constant.minimumAmountEnum[formattedCoinChosen]}`);
         return false;
       }
   
@@ -271,7 +272,7 @@
       // min-amount needs to be increased when the bitcoin price goes up
       const formattedCoinChosen = Constant.getCrypto(coinChosen);
       if (formattedCoinChosen && minimumAmountRequired(coinChosen, amount) === false) {
-        alert(`Not Enough Funds to Pay for Network Fees - Minimum Balance Requirements: ${Constant.minimumAmountEnum[formattedCoinChosen]}`);
+        alert(`Not Enough Funds to Pay for ${formattedCoinChosen} Network Fees - Minimum Balance Requirements: ${Constant.minimumAmountEnum[formattedCoinChosen]}`);
         return false;
       } 
 
@@ -351,8 +352,7 @@
         
       } catch (error) { console.log(error) } 
   
-      console.log(message)
-      // sendMessage(message);
+      sendMessage(message);
     })
   } 
   
@@ -424,7 +424,7 @@
           displayProcessingMsg();
           alert(`${message['amount']} ${message['coinChosen']} pledged.`);
         } else if (response.errorDescription === 'Insufficient balance') {
-          alert('Please wait 2 minutes between each pledge');
+          alert('Please wait 45 seconds between each pledge');
           console.log('Insufficient balance')
         }
       })
@@ -450,6 +450,12 @@
           div.id = 'processingMsg';
           div.innerHTML = `<h2>Pledge Sent!</h2> <p>Processing in 2 hours. Your coins will be forwarded to the recipient if they are "verified". <br><br>If its a crowdfunding campaign it must also be fully funded for at least 14 days to prevent scams.</p><p>If there is not enough funds in your addresses, all your pending pledges on every site will be removed to help reduce spam.</p> Temporary ID: <a href="${GLOBAL['node']}/index.html?chain=IGNIS&account=${account}" target="_BLANK"> ${hash}</a>`;
           q('#cdonate__init-btn').before(div);
+
+  //pat added this, the yes/cancel buttons stayed on page. and it doesnt show the message above ^ not sure why.
+  //Leon TODO
+  document.querySelector(".pledge-submit").style.display = 'none';
+  document.querySelector("#cdonate__confirm .pledge-btn").style.display = 'none';
+
   
           const $cdonate = document.getElementById('cdonate');
           const containerHeight = $cdonate.clientHeight;

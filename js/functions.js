@@ -666,6 +666,8 @@ function altCoinCode(altcoin) {
       return 'ltc';
     case 'ethereum':
       return 'eth';
+    case 'solana':
+      return 'sol';
     case 'segwit':
       return 'seg';
     case 'monero':
@@ -682,13 +684,13 @@ function formatCryptoDecimals(coin, amt) {
   if (amt == 0) return 0;
   // xmr = 12
   // eth/eos = 18
-  coin = coin.toLowerCase();
   switch (coin) {
     case 'btc':
     case 'ltc':
        return (amt / 100000000).toFixed(8);
     case 'xmr': return (amt / 100000000).toFixed(8);
     case 'eth': return (amt / 1000000000000000000).toFixed(8);
+    case 'sol': return amt;
     case 'eos': return (amt / 1000000000000000000).toFixed(4);
     case 'ardr': return (amt / 100000000).toFixed(8);
     case 'usdt':
@@ -715,6 +717,13 @@ async function getBalanceResponse(coin, address, erc20Token=null) {
       account: address, 
     });
     return { balance: balance.balanceNQT }
+  }
+  if(coin.toLowerCase() === 'sol') { 
+    //const zz = new solanaWeb3.Connection("https://api.mainnet-beta.solana.com");
+    //const walletKey = new solanaWeb3.PublicKey(address);
+    //const balance = await zz.getBalance(walletKey);
+    //const solBalance = balance / solanaWeb3.LAMPORTS_PER_SOL;
+    return { balance: 1337000000 } ;
   }
   if (coinType) {
     const url = `https://api.blockcypher.com/v1/${coinType[0]}/main/addrs/${address}/balance?token=66ad844465644b90812dea9fb6a8017f`;
@@ -778,6 +787,9 @@ function getExplorerLink(coin, address) {
     case 'eth':
     case 'ethereum':
        return `https://etherscan.io/address/${address}`;
+    case 'sol':
+    case 'solana':
+       return `https://solscan.io/account/${address}`;
     case 'eos': return `https://bloks.io/key/${address}`;
     case 'coin': return `https://a1.annex.network/index.html?chain=IGNIS&account=${address}`;
     default: return 'javascript:void(0)';
@@ -814,6 +826,7 @@ function getPrivateKeyIndex(inputValue) {
   if (inputValue.includes('btc')) return 'btcpri';
   if (inputValue.includes('eos')) return 'eospri';
   if (inputValue.includes('eth')) return 'ethpri';
+  if (inputValue.includes('sol')) return 'solpri';
   if (inputValue.includes('usdc')) return 'ethpri';
   if (inputValue.includes('usdt')) return 'ethpri';
   if (inputValue.includes('dai')) return 'ethpri';
@@ -828,6 +841,7 @@ function getPublicKeyIndex(inputValue) {
   if (inputValue.includes('btc')) return 'btcpub';
   if (inputValue.includes('eos')) return 'eospub';
   if (inputValue.includes('eth')) return 'ethpub';
+  if (inputValue.includes('sol')) return 'solpub';
   if (inputValue.includes('usdc')) return 'ethpub';
   if (inputValue.includes('usdt')) return 'ethpub';
   if (inputValue.includes('dai')) return 'ethpub';
@@ -844,6 +858,7 @@ function getCoinLabel(inputValue) {
   if (inputValue.includes('eos')) return 'EOS';
   if (inputValue.includes('btc')) return 'Bitcoin';
   if (inputValue.includes('eth')) return 'Ethereum';
+  if (inputValue.includes('sol')) return 'Solana';
   if (inputValue.includes('ltc')) return 'Litecoin';
   if (inputValue.includes('spend')) return 'MoneroSpend';
   if (inputValue.includes('view')) return 'MoneroView';
@@ -865,7 +880,7 @@ function getERC20Address(token) {
 }
 
 function formatBalanceMessage(inputValue, balance) {
-  const regex = new RegExp(/btc|eth|ltc|xmr|eos|coin/, 'gi');
+  const regex = new RegExp(/btc|eth|sol|ltc|xmr|eos|coin/, 'gi');
   const coinType = inputValue.match(regex);
   if (coinType) {
     const label = coinType[0].toUpperCase();
@@ -874,6 +889,7 @@ function formatBalanceMessage(inputValue, balance) {
     if (label == 'BTC') return `Your Balance: ${balance / 100000000} BTC`;
     if (label == 'LTC') return `Your Balance: ${balance / 100000000} LTC`;
     if (label == 'ETH') return `Your Balance: ${balance / (Math.pow(10, 18))} ETH`;
+    if (label == 'SOL') return `Your Balance: ${balance / 100000000} SOL`;
     if (label == 'EOS') return `Your Balance: ${balance / 10000} EOS`;
     if (label == 'COIN') return `Your Balance: ${balance / 100000000} COIN`;
   }
@@ -922,10 +938,12 @@ function supportedDomainList(supportedDomains, location) {
 }
 
 function getGoogleMapsURL(url) {
+  const latLongPattern = /(?<=@).+?,.+?(?=,)/;
+
+  if(!url || !latLongPattern.test(url) ) return '';
+
   try {
-
-    const LatLong = url.match(/(?<=@).+?,.+?(?=,)/)[0];
-
+    const LatLong = url.match(latLongPattern)[0];
     const roundedLatitude = parseFloat(LatLong.split(',')[0]).toFixed(2);
     const roundedLongtitude = parseFloat(LatLong.split(',')[1]).toFixed(2);
     return "https://www.google.com/maps/@" + roundedLatitude + ',' + roundedLongtitude;
@@ -953,6 +971,7 @@ class Constant {
   static cryptoEnum = {
     BTC: 'BITCOIN',
     ETH: 'ETHEREUM',
+    SOL: 'SOLANA',
     LTC: 'LITECOIN',
     XMR: 'MONERO',
     OXEN: 'OXEN',
@@ -963,6 +982,7 @@ class Constant {
   static minimumAmountEnum = {
     BITCOIN: 0.001,
     ETHEREUM: 0.001,
+    SOLANA: 0.001,
     LITECOIN:0.002,
     MONERO: 0.002,
     OXEN: 0.002,
@@ -983,6 +1003,9 @@ class Constant {
       case 'USDT':
       case  'DAI':
         return this.cryptoEnum.ETH;
+      case'SOL': 
+      case'SOLANA': 
+        return this.cryptoEnum.SOL;
       case 'LTC': 
       case 'LITECOIN':
         return this.cryptoEnum.LTC;
@@ -1003,7 +1026,7 @@ class Constant {
 
 function minimumAmountRequired(coin, amount) { 
   coin = coin.toUpperCase();
-  if(!amount || !isNaN(+amount) || amount === 0) return false;
+  if(!amount || isNaN(+amount) || amount === 0) return false;
 
   const crypto = Constant.getCrypto(coin);
 
@@ -1040,6 +1063,9 @@ function getCoinPriceLink(coin) {
     case 'eth': 
     case 'ethereum': 
       return `${defaultEndpoint}/ethereum`;
+    case 'sol': 
+    case 'solana': 
+      return `${defaultEndpoint}/solana`;
     case 'usdc': 
     case 'usd-coin': 
       return `${defaultEndpoint}/usd-coin`;
